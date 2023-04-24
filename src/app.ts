@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 
-import postRouter from './routes/post.route';
+// import postRouter from './routes/post.route';
 
 require('dotenv').config();
 
@@ -20,6 +20,6 @@ app.get('/', (req, res) => {
   });
 });
 
-app.use('/api/posts', postRouter);
+// app.use('/api/posts', postRouter);
 
 export default app;
