@@ -43,7 +43,9 @@ const usersSchema = new Schema<IUsers>({
     },
   ],
   avatar: { type: String, default: '' },
-  accountCreated: { types: Date, default: Date.now, required: true },
+  accountCreated: { types: Date },
 });
 
-module.exports = model<IUsers>('Users', usersSchema);
+const UsersModelling = model<IUsers>('Users', usersSchema);
+
+export default UsersModelling;

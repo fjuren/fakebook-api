@@ -19,4 +19,6 @@ const commentsSchema = new Schema<IComments>({
   commentCreated: { type: Date, default: Date.now, required: true },
 });
 
-module.exports = model<IComments>('Comments', commentsSchema);
+const CommentsModelling = model<IComments>('Comments', commentsSchema);
+
+export default CommentsModelling;
