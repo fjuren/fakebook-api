@@ -1,19 +1,15 @@
 import { Response, Request, NextFunction } from 'express';
-import PostsModelling from '../models/posts.model';
+import * as postsServies from '../services/posts.services';
+import { IPosts } from '../models/posts.model';
 
 export const getPosts = async (
   req: Request,
-  res: Response,
+  res: Response<IPosts[]>,
   next: NextFunction
 ) => {
   try {
-    const posts = await PostsModelling.find()
-      .sort({ postCreated: 'desc' })
-      .limit(10);
-
+    const posts = await postsServies.findAllPosts();
     res.status(200).json(posts);
-
-    return posts;
   } catch (e: any) {
     res.status(500).send(e.message);
   }
