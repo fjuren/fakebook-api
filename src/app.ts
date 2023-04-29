@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 
-// import postRouter from './routes/post.route';
+import postsRouter from './routes/posts.route';
 
 require('dotenv').config();
 
@@ -14,12 +14,6 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Welcome to the timeline',
-  });
-});
-
-// app.use('/api/posts', postRouter);
+app.use('/api/posts', postsRouter);
 
 export default app;

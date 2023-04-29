@@ -1,6 +1,6 @@
 import { Schema, model, Types } from 'mongoose';
 
-interface IPosts {
+export interface IPosts {
   content: string;
   image?: string;
   likes?: Types.ObjectId[];
