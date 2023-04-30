@@ -1,5 +1,7 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import mongoose from 'mongoose';
-const mongoConnection = process.env.MONGO_URI as string;
+const mongoConnection = process.env.MONGO_URI_DEV as string;
 
 const mongoConnect = async () => {
   try {

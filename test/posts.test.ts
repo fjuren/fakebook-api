@@ -16,12 +16,14 @@ describe('Posts testing', () => {
   });
 
   describe('GET /api/posts/', () => {
-    it('Should return all the posts requested but follows the query', async () => {
-      const res = await request(app)
-        .get('/api/posts/')
-        .set('Accept', 'application/json');
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toBeInstanceOf(Array);
+    describe('Given posts exist', () => {
+      it('Should return all the posts requested but follows the query', async () => {
+        const res = await request(app)
+          .get('/api/posts/')
+          .set('Accept', 'application/json');
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toBeInstanceOf(Array);
+      });
     });
   });
 });
