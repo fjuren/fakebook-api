@@ -14,7 +14,7 @@ const users: any = [];
 const posts: any = [];
 const comments: any = [];
 
-const uri = process.env.MONGO_URI!;
+const uri = process.env.MONGO_URI_DEV!;
 
 async function main() {
   await mongoose.connect(uri);
