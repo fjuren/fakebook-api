@@ -15,14 +15,22 @@ describe('Posts testing', () => {
     await mongoose.connection.close();
   });
 
-  describe('GET /api/posts/', () => {
+  describe('GET /api/posts/timeline', () => {
     describe('Given posts exist', () => {
       it('Should return all the posts requested but follows the query', async () => {
         const res = await request(app)
-          .get('/api/posts/')
+          .get('/api/posts/timeline')
           .set('Accept', 'application/json');
         expect(res.statusCode).toBe(200);
         expect(res.body).toBeInstanceOf(Array);
+      });
+    });
+  });
+
+  describe('POST /api/posts/create_post', () => {
+    describe('When a user submits a post', () => {
+      it('Should should create a new post', async () => {
+        // TODO
       });
     });
   });

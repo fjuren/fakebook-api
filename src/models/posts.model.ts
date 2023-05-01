@@ -28,6 +28,6 @@ const postsSchema = new Schema<IPosts>({
   postCreated: { type: Date, default: Date.now, required: true },
 });
 
-const PostsModelling = model<IPosts>('Posts', postsSchema);
+const Posts = model<IPosts>('Posts', postsSchema);
 
-export default PostsModelling;
+export default Posts;

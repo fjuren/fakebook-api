@@ -1,4 +1,4 @@
-// Recall...
+// Recall
 // interface Error {
 //   name: string;
 //   message: string;
