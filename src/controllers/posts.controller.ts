@@ -1,4 +1,5 @@
 import { Response, Request, NextFunction } from 'express';
+import { validationResult } from 'express-validator';
 import * as postsServices from '../services/posts.services';
 import { IPosts } from '../models/posts.model';
 import * as handleErrors from '../utils/handleErrors';
@@ -18,17 +19,30 @@ export const getPosts = async (
 
 export const createPost = async (
   req: Request,
-  res: Response<IPosts>,
+  res: Response,
   next: NextFunction
 ) => {
   try {
-    const content = req.body;
-    const image = req.body;
-    const user = 'User placeholder';
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        errors: errors.array(),
+      });
+    }
+
+    const { content, image } = req.body;
+
+    // TODO
+    // [ ] Update with real user once user modules are added
+    const user = 'testuser';
 
     const newPost = await postsServices.createPost(content, image, user);
-    res.json(newPost);
-  } catch (e: any) {
-    res.status(500).send(e.message);
+
+    res.status(200).json(newPost);
+  } catch (err: any) {
+    res.status(500).json(err.message);
+    console.log(err);
   }
 };

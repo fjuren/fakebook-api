@@ -1,4 +1,6 @@
 import Posts from '../models/posts.model';
+import { IPosts } from '../models/posts.model';
+import * as handleErrors from '../utils/handleErrors';
 
 export const findAllPosts = async () => {
   const posts = await Posts.find().sort({ postCreated: 'desc' }).limit(10);
@@ -9,11 +11,7 @@ export const createPost = async (
   content: string,
   image: string,
   user: string
-) => {
-  // TODO:
-  //   [ ] Validate
-  //   [ ] Sanitize
-
+): Promise<IPosts> => {
   const posts = new Posts({
     content: content,
     image: image,
@@ -23,8 +21,10 @@ export const createPost = async (
     postCreate: Date.now,
   });
 
-  posts.save(function (err) {
-    if (err) return err;
+  await posts.save(function (err) {
+    // TODO
+    // [ ] Update error handling
+    if (err) return handleErrors.BaseError;
   });
 
   return posts;
