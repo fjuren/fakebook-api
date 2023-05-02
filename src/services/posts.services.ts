@@ -21,11 +21,12 @@ export const createPost = async (
     postCreate: Date.now,
   });
 
-  await posts.save(function (err) {
-    // TODO
-    // [ ] Update error handling
-    if (err) return handleErrors.BaseError;
-  });
+  await posts.save();
+  //   // TODO
+  //   // [ ] Update error handling
+  //      [ ] Create user and run them through to successfully save data to db
+
+  console.log(posts);
 
   return posts;
 };
