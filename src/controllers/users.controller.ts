@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express-serve-static-core';
-// import * as usersServices from '../services/users.services'
+import { validationResult } from 'express-validator';
+import * as usersServices from '../services/users.services';
+import * as handleErrors from '../utils/handleErrors';
 
 export const signup = async (
   req: Request,
@@ -7,7 +9,30 @@ export const signup = async (
   next: NextFunction
 ) => {
   try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      console.log(
+        res.status(400).json({
+          success: false,
+          errors: errors.array(),
+        })
+      );
+      return handleErrors.BadRequest; // 400
+    }
+
+    const { firstName, lastName, email, password, avatar } = req.body;
+
+    const newUser = usersServices.signup(
+      firstName,
+      lastName,
+      email,
+      password,
+      avatar
+    );
+
+    res.status(200).json(newUser);
   } catch (e: any) {
-    // res.status(500).send(e.message)
+    res.status(500).send(e.message);
   }
 };

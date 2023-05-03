@@ -1,6 +1,6 @@
 import { body, check } from 'express-validator';
 
-export const newPostValidator = [
+export const newPostValidation = [
   body('content', 'Post must be at least 5 characters long.')
     .trim()
     .isLength({ min: 5 })

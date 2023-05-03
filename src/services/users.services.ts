@@ -6,7 +6,7 @@ export const signup = async (
   lastName: string,
   email: string,
   password: string,
-  avatar: string
+  avatar?: string
 ): Promise<IUsers> => {
   const users = new Users({
     firstName,

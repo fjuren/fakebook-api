@@ -9,7 +9,7 @@ router.get('/timeline', postsController.getPosts);
 // Create
 router.post(
   '/create_post',
-  postValidation.newPostValidator,
+  postValidation.newPostValidation,
   postsController.createPost
 );
 

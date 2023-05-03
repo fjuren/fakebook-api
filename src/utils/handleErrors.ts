@@ -24,3 +24,13 @@ export class NotFound extends BaseError {
     this.name = name;
   }
 }
+
+export class BadRequest extends BaseError {
+  name: string;
+
+  constructor(name: string) {
+    super(400, `Oops, the client has made an error. ${name} not found.`);
+
+    this.name = name;
+  }
+}
