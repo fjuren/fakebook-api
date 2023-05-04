@@ -1,3 +1,4 @@
+import { hashSync } from 'bcryptjs';
 import Users from '../models/users.model';
 import { IUsers } from '../models/users.model';
 
@@ -8,23 +9,25 @@ export const signup = async (
   password: string,
   avatar?: string
 ): Promise<IUsers> => {
+  // Salting for hashing password
+  const saltRounds = 10;
+
   const users = new Users({
     firstName,
     lastName,
     email,
-    password,
+    password: hashSync(password, saltRounds),
     friendRequest: [],
     userRequests: [],
     posts: [],
     comments: [],
     avatar,
-    accountCreated: Date,
+    accountCreated: new Date(),
   });
 
   await users.save();
   //   // TODO
   //   // [ ] Update error handling
-  //      [ ] Create user and run them through to successfully save data to db
 
   return users;
 };

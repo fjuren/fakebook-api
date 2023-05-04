@@ -43,7 +43,7 @@ const usersSchema = new Schema<IUsers>({
     },
   ],
   avatar: { type: String, default: '' },
-  accountCreated: { types: Date },
+  accountCreated: { type: Date },
 });
 
 const UsersModelling = model<IUsers>('Users', usersSchema);

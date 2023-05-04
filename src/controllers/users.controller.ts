@@ -23,7 +23,7 @@ export const signup = async (
 
     const { firstName, lastName, email, password, avatar } = req.body;
 
-    const newUser = usersServices.signup(
+    const newUser = await usersServices.signup(
       firstName,
       lastName,
       email,
@@ -31,7 +31,9 @@ export const signup = async (
       avatar
     );
 
-    res.status(200).json(newUser);
+    res.status(200);
+    // res.json(newUser); // careful. newUser contains hashed password
+    res.send({ success: true, message: 'Account created successfully' });
   } catch (e: any) {
     res.status(500).send(e.message);
   }
