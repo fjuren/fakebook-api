@@ -12,12 +12,10 @@ export const signup = async (
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      console.log(
-        res.status(400).json({
-          success: false,
-          errors: errors.array(),
-        })
-      );
+      res.status(400).json({
+        success: false,
+        errors: errors.array(),
+      });
       return handleErrors.BadRequest; // 400
     }
 
@@ -36,5 +34,36 @@ export const signup = async (
     res.send({ success: true, message: 'Account created successfully' });
   } catch (e: any) {
     res.status(500).send(e.message);
+  }
+};
+
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.status(400).json({
+        success: false,
+        errors: errors.array(),
+      });
+      return handleErrors.BadRequest; // 400
+    }
+
+    const { email, password } = req.body;
+
+    const userLogin = await usersServices.login(email, password);
+
+    res.status(200);
+    res.json({
+      success: true,
+      message: 'User successfully logged in',
+      user: {},
+    });
+  } catch (e: any) {
+    res.status(401).send(e.message);
   }
 };

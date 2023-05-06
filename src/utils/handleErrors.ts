@@ -29,7 +29,7 @@ export class BadRequest extends BaseError {
   name: string;
 
   constructor(name: string) {
-    super(400, `Oops, the client has made an error. ${name} not found.`);
+    super(400, `Oops, the client has made an error. ${name}`);
 
     this.name = name;
   }

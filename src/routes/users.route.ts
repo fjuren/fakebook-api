@@ -14,3 +14,9 @@ router.post(
 );
 
 export default router;
+
+router.post(
+  '/login',
+  usersValidation.userLoginValidation,
+  usersController.login
+);
