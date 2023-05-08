@@ -1,4 +1,6 @@
+require('dotenv').config();
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import Users from '../models/users.model';
 import { IUsers } from '../models/users.model';
 import * as handleErrors from '../utils/handleErrors';
@@ -37,7 +39,7 @@ export const signup = async (
 };
 
 export const login = async (email: string, password: string) => {
-  await Users.findOne({ email: email }).then((user) => {
+  const user = await Users.findOne({ email: email }).then((user) => {
     // User not found from email given
     if (!user) {
       // error 400
@@ -48,11 +50,15 @@ export const login = async (email: string, password: string) => {
       throw new handleErrors.BadRequest(
         'Password is incorrect. Please try again.'
       );
-
-    // Email & password match
-    const loginPayload = {
-      email,
-      password,
-    };
+    return user;
   });
+  // create token; 30 second expiration
+  const jwtToken = jwt.sign({ email }, process.env.JWT_SECRET as string, {
+    expiresIn: 10000000,
+  });
+
+  return {
+    user,
+    jwtToken: 'Bearer ' + jwtToken,
+  };
 };

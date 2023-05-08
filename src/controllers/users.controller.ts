@@ -55,13 +55,14 @@ export const login = async (
 
     const { email, password } = req.body;
 
-    const userLogin = await usersServices.login(email, password);
+    const { user, jwtToken } = await usersServices.login(email, password);
 
     res.status(200);
     res.json({
       success: true,
       message: 'User successfully logged in',
-      user: {},
+      user: user,
+      token: jwtToken, // TODO [ ] add this to localstorage when ready
     });
   } catch (e: any) {
     res.status(401).send(e.message);
