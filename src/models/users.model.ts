@@ -1,44 +1,45 @@
-import { Schema, model, Types } from 'mongoose';
+// import { Schema, model, Types } from 'mongoose';
+import * as mongoose from 'mongoose';
 
-export interface IUsers {
+export interface IUsers extends mongoose.Document {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  friendRequest?: Types.ObjectId[];
-  userRequests?: Types.ObjectId[];
-  posts?: Types.ObjectId[];
-  comments?: Types.ObjectId[];
+  friendRequest?: mongoose.Types.ObjectId[];
+  userRequests?: mongoose.Types.ObjectId[];
+  posts?: mongoose.Types.ObjectId[];
+  comments?: mongoose.Types.ObjectId[];
   avatar?: string;
   accountCreated: Date;
 }
 
-const usersSchema = new Schema<IUsers>({
+const usersSchema = new mongoose.Schema<IUsers>({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
   friendRequest: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Users',
     },
   ],
   userRequests: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Users',
     },
   ],
   posts: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Posts',
     },
   ],
   comments: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Comments',
     },
   ],
@@ -46,6 +47,6 @@ const usersSchema = new Schema<IUsers>({
   accountCreated: { type: Date },
 });
 
-const UsersModelling = model<IUsers>('Users', usersSchema);
+const UsersModelling = mongoose.model<IUsers>('Users', usersSchema);
 
 export default UsersModelling;

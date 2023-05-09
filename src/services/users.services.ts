@@ -11,14 +11,14 @@ export const signup = async (
   email: string,
   password: string,
   avatar?: string
-): Promise<IUsers> => {
+) => {
   // TODO
   // [ ] check if user (email) already exists
 
   // Salting for hashing password
   const saltRounds = 10;
 
-  const users = new Users({
+  const user: IUsers = new Users({
     firstName,
     lastName,
     email,
@@ -31,11 +31,19 @@ export const signup = async (
     accountCreated: new Date(),
   });
 
-  await users.save();
+  await user.save();
   //   // TODO
   //   // [ ] Update error handling
 
-  return users;
+  const jwtToken: string = jwt.sign(
+    { email },
+    process.env.JWT_SECRET as string,
+    {
+      expiresIn: '14d',
+    }
+  );
+
+  return { user: user, jwtToken: 'Bearer ' + jwtToken };
 };
 
 export const login = async (email: string, password: string) => {
@@ -52,9 +60,9 @@ export const login = async (email: string, password: string) => {
       );
     return user;
   });
-  // create token; 30 second expiration
+
   const jwtToken = jwt.sign({ email }, process.env.JWT_SECRET as string, {
-    expiresIn: 10000000,
+    expiresIn: '14d',
   });
 
   return {

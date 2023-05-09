@@ -21,7 +21,7 @@ export const signup = async (
 
     const { firstName, lastName, email, password, avatar } = req.body;
 
-    const newUser = await usersServices.signup(
+    const { user, jwtToken } = await usersServices.signup(
       firstName,
       lastName,
       email,
@@ -30,8 +30,12 @@ export const signup = async (
     );
 
     res.status(200);
-    // res.json(newUser); // careful. newUser contains hashed password
-    res.send({ success: true, message: 'Account created successfully' });
+    res.json({
+      success: true,
+      message: 'Account created successfully',
+      user,
+      token: jwtToken,
+    });
   } catch (e: any) {
     res.status(500).send(e.message);
   }
