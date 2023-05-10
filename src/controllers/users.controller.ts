@@ -72,3 +72,12 @@ export const login = async (
     res.status(401).send(e.message);
   }
 };
+
+export const logout = (req: Request, res: Response, next: NextFunction) => {
+  req.logout((err: any) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/');
+  });
+};

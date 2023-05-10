@@ -14,11 +14,13 @@ router.post(
   usersController.signup
 );
 
-export default router;
-
 router.post(
   '/login',
   usersValidation.userLoginValidation,
   passport.authenticate('jwt', { session: false }),
   usersController.login
 );
+
+router.post('/logout', usersController.logout);
+
+export default router;
