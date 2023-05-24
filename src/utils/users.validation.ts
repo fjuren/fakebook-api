@@ -28,7 +28,7 @@ export const userSignupValidation = [
       'Password must be 8 to 100 characters, with at least 1 upper case, number and special symbol (eg. !@#$%)'
     )
     .escape(),
-  body('confirm-password', 'Passwords must match')
+  body('confirmPassword', 'Passwords must match')
     .trim()
     .exists()
     .custom((value, { req }) => {
