@@ -17,7 +17,7 @@ router.post(
 router.post(
   '/login',
   usersValidation.userLoginValidation,
-  passport.authenticate('jwt', { session: false }),
+  // passport.authenticate('jwt', { session: false }),
   usersController.login
 );
 
