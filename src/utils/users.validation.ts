@@ -54,20 +54,8 @@ export const userLoginValidation = [
   body('email', 'Email is required')
     .trim()
     .isEmail()
-    .withMessage('Must enter a valid email address')
+    .withMessage('Email is required')
     .isLength({ min: 1 })
     .escape(),
-  body('password', 'Password must be 8 to 100 characters long')
-    .trim()
-    .isLength({ max: 100 })
-    .isStrongPassword({
-      minLength: 8,
-      minUppercase: 1,
-      minNumbers: 1,
-      minSymbols: 1,
-    })
-    .withMessage(
-      'Password must be 8 to 100 characters, with at least 1 upper case, number and special symbol (eg. !@#$%)'
-    )
-    .escape(),
+  body('password', 'Password is required').trim().isLength({ min: 1 }).escape(),
 ];

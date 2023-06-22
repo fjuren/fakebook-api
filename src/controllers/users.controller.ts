@@ -12,12 +12,12 @@ export const signup = async (
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
+      // decided not to use template errors from handleErrors.ts for validation errors using express-validator library
       res.status(400).json({
         success: false,
-        errorCode: 400,
+        statusCode: 400,
         errors: errors.array(),
       });
-      return handleErrors.BadRequestError; // 400
     }
 
     const { firstName, lastName, email, password, avatar } = req.body;
@@ -30,20 +30,28 @@ export const signup = async (
       avatar
     );
 
-    res.status(200);
-    res.json({
+    res.status(200).json({
       success: true,
+      statusCode: 200,
       message: 'Account created successfully',
       user,
       token: jwtToken,
     });
   } catch (e: any) {
     if (e instanceof handleErrors.ConflictError) {
-      res
-        .status(e.statusCode)
-        .json({ statusCode: e.statusCode, error: e.message });
+      res.status(e.statusCode).json({
+        success: e.success,
+        name: e.name,
+        statusCode: e.statusCode,
+        error: e.message,
+      });
     } else {
-      res.status(500).json({ statusCode: 500, error: 'Server error' });
+      res.status(500).json({
+        success: false,
+        name: 'Internal server error',
+        statusCode: 500,
+        error: 'Server error',
+      });
     }
   }
 };
@@ -59,30 +67,37 @@ export const login = async (
     if (!errors.isEmpty()) {
       res.status(400).json({
         success: false,
-        errorCode: 400,
+        statusCode: 400,
         errors: errors.array(),
       });
-      return handleErrors.BadRequestError; // 400
     }
 
     const { email, password } = req.body;
 
     const { user, jwtToken } = await usersServices.login(email, password);
 
-    res.status(200);
-    res.json({
+    res.status(200).json({
       success: true,
+      statusCode: 200,
       message: 'User successfully logged in',
       user: user,
-      token: jwtToken, // TODO [ ] add this to localstorage when ready
+      token: jwtToken,
     });
   } catch (e: any) {
     if (e instanceof handleErrors.BadRequestError) {
-      res
-        .status(e.statusCode)
-        .json({ statusCode: e.statusCode, error: e.message });
+      res.status(e.statusCode).json({
+        success: e.success,
+        name: e.name,
+        statusCode: e.statusCode,
+        error: e.message,
+      });
     } else {
-      res.status(500).json({ statusCode: 500, error: 'Server error' });
+      res.status(500).json({
+        success: false,
+        name: 'Internal server error',
+        statusCode: 500,
+        error: 'Server error',
+      });
     }
   }
 };

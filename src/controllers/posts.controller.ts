@@ -28,6 +28,7 @@ export const createPost = async (
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
+        statusCode: 400,
         errors: errors.array(),
       });
     }

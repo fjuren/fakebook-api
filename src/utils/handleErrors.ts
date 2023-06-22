@@ -7,29 +7,38 @@
 import { Request, Response, NextFunction } from 'express';
 
 export class BaseError extends Error {
+  success: boolean;
+  name: string;
   statusCode: number;
 
-  constructor(statusCode: number, message: string) {
+  constructor(
+    success: boolean,
+    name: string,
+    statusCode: number,
+    message: string
+  ) {
     super(message);
+    this.success = success;
+    this.name = name;
     this.statusCode = statusCode;
   }
 }
 
 export class NotFoundError extends BaseError {
   constructor(message: string) {
-    super(404, `${message}`);
+    super(false, 'Not found', 404, `${message}`);
   }
 }
 
 export class BadRequestError extends BaseError {
   constructor(message: string) {
-    super(400, `${message}`);
+    super(false, 'Bad request', 400, `${message}`);
   }
 }
 
 export class ConflictError extends BaseError {
   constructor(message: string) {
-    super(409, `${message}`);
+    super(false, 'Conflict', 409, `${message}`);
   }
 }
 
