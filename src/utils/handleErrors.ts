@@ -4,33 +4,44 @@
 //   message: string;
 //   stack?: string;
 // }
+import { Request, Response, NextFunction } from 'express';
 
 export class BaseError extends Error {
   statusCode: number;
 
   constructor(statusCode: number, message: string) {
-    super();
+    super(message);
     this.statusCode = statusCode;
-    this.message = message;
   }
 }
 
-export class NotFound extends BaseError {
-  name: string;
-
-  constructor(name: string) {
-    super(404, `Oops, ${name} not found.`);
-
-    this.name = name;
+export class NotFoundError extends BaseError {
+  constructor(message: string) {
+    super(404, `${message}`);
   }
 }
 
-export class BadRequest extends BaseError {
-  name: string;
-
-  constructor(name: string) {
-    super(400, `Oops, the client has made an error. ${name}`);
-
-    this.name = name;
+export class BadRequestError extends BaseError {
+  constructor(message: string) {
+    super(400, `${message}`);
   }
 }
+
+export class ConflictError extends BaseError {
+  constructor(message: string) {
+    super(409, `${message}`);
+  }
+}
+
+export const handleErrors = (
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (err instanceof BaseError) {
+    res.status(err.statusCode).json({ error: err.message });
+  } else {
+    res.status(500).json({ error: 'Server error' });
+  }
+};

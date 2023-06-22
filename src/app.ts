@@ -30,7 +30,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/posts', postsRouter);
 
 app.use((req, res, next) => {
-  res.json(new error.NotFound('Page'));
+  res.json(new error.NotFoundError('Page'));
 });
 
 export default app;

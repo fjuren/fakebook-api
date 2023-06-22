@@ -14,6 +14,12 @@ export const signup = async (
 ) => {
   // TODO
   // [ ] check if user (email) already exists
+  const userExists = await Users.findOne({ email: email }).then((user) => {
+    if (user) {
+      // error 409 - data conflict
+      throw new handleErrors.ConflictError('Email already exists');
+    }
+  });
 
   // Salting for hashing password
   const saltRounds = 10;
@@ -51,11 +57,11 @@ export const login = async (email: string, password: string) => {
     // User not found from email given
     if (!user) {
       // error 400
-      throw new handleErrors.BadRequest('Email is not found.');
+      throw new handleErrors.BadRequestError('Email is not found.');
     }
     // Password doesn't match user
     if (!bcrypt.compareSync(password, user.password))
-      throw new handleErrors.BadRequest(
+      throw new handleErrors.BadRequestError(
         'Password is incorrect. Please try again.'
       );
     return user;

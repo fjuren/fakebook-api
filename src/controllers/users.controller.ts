@@ -14,9 +14,10 @@ export const signup = async (
     if (!errors.isEmpty()) {
       res.status(400).json({
         success: false,
+        errorCode: 400,
         errors: errors.array(),
       });
-      return handleErrors.BadRequest; // 400
+      return handleErrors.BadRequestError; // 400
     }
 
     const { firstName, lastName, email, password, avatar } = req.body;
@@ -37,7 +38,13 @@ export const signup = async (
       token: jwtToken,
     });
   } catch (e: any) {
-    res.status(500).send(e.message);
+    if (e instanceof handleErrors.ConflictError) {
+      res
+        .status(e.statusCode)
+        .json({ statusCode: e.statusCode, error: e.message });
+    } else {
+      res.status(500).json({ statusCode: 500, error: 'Server error' });
+    }
   }
 };
 
@@ -52,9 +59,10 @@ export const login = async (
     if (!errors.isEmpty()) {
       res.status(400).json({
         success: false,
+        errorCode: 400,
         errors: errors.array(),
       });
-      return handleErrors.BadRequest; // 400
+      return handleErrors.BadRequestError; // 400
     }
 
     const { email, password } = req.body;
@@ -69,7 +77,13 @@ export const login = async (
       token: jwtToken, // TODO [ ] add this to localstorage when ready
     });
   } catch (e: any) {
-    res.status(401).send(e.message);
+    if (e instanceof handleErrors.BadRequestError) {
+      res
+        .status(e.statusCode)
+        .json({ statusCode: e.statusCode, error: e.message });
+    } else {
+      res.status(500).json({ statusCode: 500, error: 'Server error' });
+    }
   }
 };
 
