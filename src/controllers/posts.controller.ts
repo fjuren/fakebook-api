@@ -11,6 +11,7 @@ export const getPosts = async (
 ) => {
   try {
     const posts = await postsServices.findAllPosts();
+    console.log(posts);
     res.status(200).json(posts);
   } catch (e: any) {
     res.status(500).send(e.message);

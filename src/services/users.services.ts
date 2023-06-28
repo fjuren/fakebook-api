@@ -38,8 +38,6 @@ export const signup = async (
   });
 
   await user.save();
-  //   // TODO
-  //   // [ ] Update error handling
 
   const jwtToken: string = jwt.sign(
     { email },

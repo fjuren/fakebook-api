@@ -1,8 +1,9 @@
 // Recall
 // interface Error {
+//   success: boolean
 //   name: string;
+//   StatusCode: number;
 //   message: string;
-//   stack?: string;
 // }
 import { Request, Response, NextFunction } from 'express';
 

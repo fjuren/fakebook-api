@@ -12,7 +12,7 @@ export const signup = async (
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      // decided not to use template errors from handleErrors.ts for validation errors using express-validator library
+      // I decided not to use template errors from handleErrors.ts for validation errors using express-validator library
       res.status(400).json({
         success: false,
         statusCode: 400,

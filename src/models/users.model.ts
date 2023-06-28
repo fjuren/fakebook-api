@@ -47,6 +47,6 @@ const usersSchema = new mongoose.Schema<IUsers>({
   accountCreated: { type: Date },
 });
 
-const UsersModelling = mongoose.model<IUsers>('Users', usersSchema);
+const Users = mongoose.model<IUsers>('Users', usersSchema);
 
-export default UsersModelling;
+export default Users;
