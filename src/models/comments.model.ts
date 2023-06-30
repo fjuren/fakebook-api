@@ -4,7 +4,7 @@ interface IComments {
   content: string;
   userLikes?: Types.ObjectId[];
   user: Types.ObjectId;
-  commentCreated: Date;
+  commentCreated: Date; // note: This is stored in an ISO 8601 format and is UTC
 }
 
 const commentsSchema = new Schema<IComments>({

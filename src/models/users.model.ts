@@ -44,7 +44,7 @@ const usersSchema = new mongoose.Schema<IUsers>({
     },
   ],
   avatar: { type: String, default: '' },
-  accountCreated: { type: Date },
+  accountCreated: { type: Date }, // note: This is stored in an ISO 8601 format and is UTC
 });
 
 const Users = mongoose.model<IUsers>('Users', usersSchema);

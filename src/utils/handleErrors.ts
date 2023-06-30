@@ -25,15 +25,21 @@ export class BaseError extends Error {
   }
 }
 
-export class NotFoundError extends BaseError {
-  constructor(message: string) {
-    super(false, 'Not found', 404, `${message}`);
-  }
-}
-
 export class BadRequestError extends BaseError {
   constructor(message: string) {
     super(false, 'Bad request', 400, `${message}`);
+  }
+}
+
+export class UnauthorizedError extends BaseError {
+  constructor(message: string) {
+    super(false, 'Unauthorized', 401, `${message}`);
+  }
+}
+
+export class NotFoundError extends BaseError {
+  constructor(message: string) {
+    super(false, 'Not found', 404, `${message}`);
   }
 }
 

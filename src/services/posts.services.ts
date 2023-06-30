@@ -1,11 +1,7 @@
 import Posts from '../models/posts.model';
 import { IPosts } from '../models/posts.model';
-import Users from '../models/users.model';
-import * as handleErrors from '../utils/handleErrors';
 
 export const findAllPosts = async () => {
-  // const postsOld = await Posts.find().sort({ postCreated: 'desc' }).limit(3);
-
   const posts = await Posts.aggregate([
     {
       $lookup: {
@@ -15,14 +11,22 @@ export const findAllPosts = async () => {
         as: 'user',
       },
     },
+    {
+      $project: {
+        user: {
+          password: 0, // removes password from reponse for security of user password
+        },
+      },
+    },
     { $unwind: '$user' },
+    { $sort: { postCreated: -1 } },
+    { $limit: 10 },
   ])
-    .limit(10)
+    // .limit(10)
     .exec()
     .then((result) => {
       return result;
     });
-
   return posts;
 };
 
@@ -44,8 +48,5 @@ export const createPost = async (
   //   // TODO
   //   // [ ] Update error handling
   //      [ ] Create user and run them through to successfully save data to db
-
-  console.log(posts);
-
   return posts;
 };

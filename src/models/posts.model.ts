@@ -6,7 +6,15 @@ export interface IPosts {
   likes?: Types.ObjectId[];
   user: Types.ObjectId;
   comments?: Types.ObjectId[];
-  postCreated: Date;
+  postCreated: Date; // note: This is stored in an ISO 8601 format and is UTC
+  errorResponse?: ErrorResponse;
+}
+
+export interface ErrorResponse {
+  success: boolean;
+  name: string;
+  statusCode: number;
+  error: string;
 }
 
 const postsSchema = new Schema<IPosts>({

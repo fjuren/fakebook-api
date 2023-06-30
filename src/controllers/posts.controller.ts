@@ -1,20 +1,37 @@
 import { Response, Request, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 import * as postsServices from '../services/posts.services';
-import { IPosts } from '../models/posts.model';
+import { IPosts, ErrorResponse } from '../models/posts.model';
 import * as handleErrors from '../utils/handleErrors';
 
 export const getPosts = async (
   req: Request,
-  res: Response<IPosts[]>,
+  res: Response<IPosts[] | ErrorResponse>,
   next: NextFunction
 ) => {
   try {
     const posts = await postsServices.findAllPosts();
-    console.log(posts);
     res.status(200).json(posts);
   } catch (e: any) {
-    res.status(500).send(e.message);
+    console.log(e);
+
+    const errorResponse: ErrorResponse = {
+      success: e.success,
+      name: e.name,
+      statusCode: e.statusCode,
+      error: e.message,
+    };
+
+    // TODO needs testing
+    if (e instanceof handleErrors.UnauthorizedError) {
+      res.status(e.statusCode).json(errorResponse);
+    }
+    res.status(500).json({
+      success: false,
+      name: 'Internal server error',
+      statusCode: 500,
+      error: 'Server error',
+    });
   }
 };
 
