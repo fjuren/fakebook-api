@@ -40,7 +40,8 @@ export const signup = async (
   await user.save();
 
   const jwtToken: string = jwt.sign(
-    { email },
+    // { email },
+    { user }, // TODO REFACTOR CODE; check if this change broke something
     process.env.JWT_SECRET as string,
     {
       expiresIn: '14d',

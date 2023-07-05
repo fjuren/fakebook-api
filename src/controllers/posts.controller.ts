@@ -1,8 +1,13 @@
+require('dotenv').config();
 import { Response, Request, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 import * as postsServices from '../services/posts.services';
 import { IPosts, ErrorResponse } from '../models/posts.model';
 import * as handleErrors from '../utils/handleErrors';
+
+import { IUsers } from '../models/users.model';
+import Users from '../models/users.model';
+import Jwt, { JwtPayload } from 'jsonwebtoken';
 
 export const getPosts = async (
   req: Request,
@@ -51,17 +56,49 @@ export const createPost = async (
       });
     }
 
+    // get user information from jwt token
+    const secret = process.env.JWT_SECRET as string;
+    const token = req.header('Authorization')?.replace('Bearer ', ''); // just extracting the token and removing Bearer
+
+    if (!token) {
+      throw new Error();
+    }
+
+    // decode token with secret, extract user id and find user from db
+    const decodedToken = Jwt.verify(token, secret) as JwtPayload;
+    const userTokenID = decodedToken.user._id;
+    const userID = await Users.findById(userTokenID);
+
+    if (!userID) {
+      return res.status(404).json({ message: 'user not found' });
+    }
+
+    const user = userID?._id;
+
     const { content, image } = req.body;
-
-    // TODO
-    // [ ] Update with real user once user modules are added
-    const user = 'testuser';
-
     const newPost = await postsServices.createPost(content, image, user);
 
-    res.status(200).json(newPost);
-  } catch (err: any) {
-    res.status(500).json(err.message);
-    console.log(err);
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Post created',
+      newPost,
+    });
+  } catch (e: any) {
+    if (e instanceof handleErrors.ConflictError) {
+      res.status(e.statusCode).json({
+        success: e.success,
+        name: e.name,
+        statusCode: e.statusCode,
+        error: e.message,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        name: 'Internal server error',
+        statusCode: 500,
+        error: 'Server error',
+      });
+    }
   }
 };

@@ -5,7 +5,6 @@ import passport from 'passport';
 
 // protects the route by checking if valid token
 const checkAuthToken = passport.authenticate('jwt', { session: false });
-
 const router = express.Router();
 
 router.get('/timeline', checkAuthToken, postsController.getPosts);

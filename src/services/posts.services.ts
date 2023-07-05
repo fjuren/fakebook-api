@@ -1,3 +1,4 @@
+import { JwtPayload } from 'jsonwebtoken';
 import Posts from '../models/posts.model';
 import { IPosts } from '../models/posts.model';
 
@@ -33,7 +34,7 @@ export const findAllPosts = async () => {
 export const createPost = async (
   content: string,
   image: string,
-  user: string
+  user: string | JwtPayload
 ): Promise<IPosts> => {
   const posts = new Posts({
     content: content,
@@ -47,6 +48,5 @@ export const createPost = async (
   await posts.save();
   //   // TODO
   //   // [ ] Update error handling
-  //      [ ] Create user and run them through to successfully save data to db
   return posts;
 };
