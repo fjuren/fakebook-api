@@ -75,8 +75,18 @@ export const createPost = async (
 
     const user = userID?._id;
 
-    const { content, image } = req.body;
-    const newPost = await postsServices.createPost(content, image, user);
+    const { content } = req.body; // string from post
+    let fileURL = null; // null since uploading a file is optional, not required
+
+    // req.file from multer and creates a url if there's an uploaded file
+    if (req.file) {
+      const { filename } = req.file;
+      fileURL = `http://localhost:3000/uploads/${filename}`;
+    } else {
+      fileURL = ''; // schema expects a string
+    }
+
+    const newPost = await postsServices.createPost(content, fileURL, user);
 
     res.status(200).json({
       success: true,
@@ -94,6 +104,7 @@ export const createPost = async (
       });
     } else {
       res.status(500).json({
+        msg: e.message,
         success: false,
         name: 'Internal server error',
         statusCode: 500,

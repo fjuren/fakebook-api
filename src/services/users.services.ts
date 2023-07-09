@@ -12,8 +12,6 @@ export const signup = async (
   password: string,
   avatar?: string
 ) => {
-  // TODO
-  // [ ] check if user (email) already exists
   const userExists = await Users.findOne({ email: email }).then((user) => {
     if (user) {
       // error 409 - data conflict
@@ -41,7 +39,7 @@ export const signup = async (
 
   const jwtToken: string = jwt.sign(
     // { email },
-    { user }, // TODO REFACTOR CODE; check if this change broke something
+    { user }, // TODO REFACTOR CODE; check if this change broke something (Changed this to access ._id on createPost in posts.controller.ts file)
     process.env.JWT_SECRET as string,
     {
       expiresIn: '14d',
@@ -66,7 +64,8 @@ export const login = async (email: string, password: string) => {
     return user;
   });
 
-  const jwtToken = jwt.sign({ email }, process.env.JWT_SECRET as string, {
+  const jwtToken = jwt.sign({ user }, process.env.JWT_SECRET as string, {
+    // replaced 'email' with 'user'. Same as signup. This was causing an error decoding jwt in posts.controller on createPost
     expiresIn: '14d',
   });
 

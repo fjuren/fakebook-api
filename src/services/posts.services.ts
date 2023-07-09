@@ -33,12 +33,12 @@ export const findAllPosts = async () => {
 
 export const createPost = async (
   content: string,
-  image: string,
+  fileURL: string | null,
   user: string | JwtPayload
 ): Promise<IPosts> => {
   const posts = new Posts({
     content: content,
-    image: image,
+    image: fileURL,
     likes: [],
     user: user,
     comments: [],
