@@ -14,17 +14,16 @@ require('dotenv').config();
 
 const app = express();
 
-// require('./config/passport')(passport);
-// ES6 workaround:
 passportConfig.jwtPassport(passport);
 
 app.use(passport.initialize());
 
-app.use(express.json());
-
-app.use(morgan('dev'));
-app.use(helmet());
 app.use(cors());
+app.use(express.json());
+app.use(morgan('dev'));
+app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' })); // API security allows request from other origins
+
+app.use('/uploads', express.static('uploads'));
 
 app.use('/api/users', usersRouter);
 app.use('/api/posts', postsRouter);

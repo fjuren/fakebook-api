@@ -9,6 +9,8 @@ import { IUsers } from '../models/users.model';
 import Users from '../models/users.model';
 import Jwt, { JwtPayload } from 'jsonwebtoken';
 
+import mime from 'mime';
+
 export const getPosts = async (
   req: Request,
   res: Response<IPosts[] | ErrorResponse>,
@@ -73,18 +75,22 @@ export const createPost = async (
       return res.status(404).json({ message: 'user not found' });
     }
 
-    const user = userID?._id;
-
     const { content } = req.body; // string from post
     let fileURL = null; // null since uploading a file is optional, not required
+    let filePath = '';
+    let fileName = '';
 
     // req.file from multer and creates a url if there's an uploaded file
     if (req.file) {
       const { filename } = req.file;
-      fileURL = `http://localhost:3000/uploads/${filename}`;
+      fileName = req.file.filename;
+      fileURL = `http://localhost:3000/uploads/${filename}`; // TODO Change domain to dynamic when creating production environment
+      filePath = `/uploads/${filename}`;
     } else {
       fileURL = ''; // schema expects a string
+      filePath = '';
     }
+    const user = userID?._id;
 
     const newPost = await postsServices.createPost(content, fileURL, user);
 
