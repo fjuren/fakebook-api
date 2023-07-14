@@ -103,10 +103,10 @@ export const login = async (
 };
 
 export const logout = (req: Request, res: Response, next: NextFunction) => {
-  req.logout((err: any) => {
-    if (err) {
-      return next(err);
-    }
-    res.redirect('/');
+  // TODO I need to check if there are any cleanup tasks I can do
+  res.json({
+    success: true,
+    statusCode: 200,
+    message: 'User successfully logged out',
   });
 };

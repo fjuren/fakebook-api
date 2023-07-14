@@ -3,9 +3,6 @@ import * as usersController from '../controllers/users.controller';
 import * as usersValidation from '../utils/users.validation';
 import passport from 'passport';
 
-// TODO
-// [ ] Authentication middleware
-
 const router = express.Router();
 
 router.post(
