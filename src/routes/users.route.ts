@@ -18,6 +18,12 @@ router.post(
   usersController.login
 );
 
+router.post(
+  '/login/facebook',
+  passport.authenticate('facebook-token'),
+  usersController.facebookLogin
+);
+
 router.post('/logout', usersController.logout);
 
 export default router;

@@ -102,6 +102,11 @@ export const login = async (
   }
 };
 
+export const facebookLogin = (req: Request, res: Response) => {
+  console.log(req);
+  res.json(req.user);
+};
+
 export const logout = (req: Request, res: Response, next: NextFunction) => {
   // TODO I need to check if there are any cleanup tasks I can do
   res.json({
