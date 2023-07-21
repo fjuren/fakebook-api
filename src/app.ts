@@ -15,6 +15,7 @@ require('dotenv').config();
 const app = express();
 
 passportConfig.jwtPassport(passport);
+passportConfig.facebookPassport(passport);
 
 app.use(passport.initialize());
 
