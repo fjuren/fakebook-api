@@ -1,7 +1,11 @@
+require('dotenv').config();
 import { Request, Response, NextFunction } from 'express-serve-static-core';
 import { validationResult } from 'express-validator';
 import * as usersServices from '../services/users.services';
 import * as handleErrors from '../utils/handleErrors';
+
+import Users from '../models/users.model';
+import Jwt, { JwtPayload } from 'jsonwebtoken';
 
 export const signup = async (
   req: Request,
@@ -102,11 +106,6 @@ export const login = async (
   }
 };
 
-export const facebookLogin = (req: Request, res: Response) => {
-  console.log(req);
-  res.json(req.user);
-};
-
 export const logout = (req: Request, res: Response, next: NextFunction) => {
   // TODO I need to check if there are any cleanup tasks I can do
   res.json({
@@ -114,4 +113,54 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
     statusCode: 200,
     message: 'User successfully logged out',
   });
+};
+
+export const getUserProfile = async (req: Request, res: Response) => {
+  try {
+    // get user information from jwt token
+    const secret = process.env.JWT_SECRET as string;
+    const token = req.header('Authorization')?.replace('Bearer ', ''); // just extracting the token and removing Bearer
+
+    if (!token) {
+      throw new Error();
+    }
+
+    // decode token with secret, extract user id and find user from db
+    const decodedToken = Jwt.verify(token, secret) as JwtPayload;
+    const userIDFromToken = decodedToken.user._id;
+    // const userID = await Users.findById(userTokenID);
+    const user = usersServices
+      .findUser(userIDFromToken)
+      .then((userProfileData) => {
+        res.status(200).json(userProfileData);
+      });
+
+    // if (!userID) {
+    if (!user) {
+      return res.status(404).json({ message: 'user not found' });
+    }
+
+    // const userMongoID = userID?._id;
+  } catch (e: any) {
+    console.log(e);
+
+    const errorResponse = {
+      // TODO create interface for user ErrorResponse. See posts.ctonroller
+      success: e.success,
+      name: e.name,
+      statusCode: e.statusCode,
+      error: e.message,
+    };
+
+    // TODO needs testing
+    if (e instanceof handleErrors.UnauthorizedError) {
+      res.status(e.statusCode).json(errorResponse);
+    }
+    res.status(500).json({
+      success: false,
+      name: 'Internal server error',
+      statusCode: 500,
+      error: 'Server error',
+    });
+  }
 };

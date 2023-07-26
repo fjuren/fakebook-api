@@ -7,7 +7,6 @@ import * as passportConfig from './config/passport';
 
 import * as error from './utils/handleErrors';
 
-import configRouter from './routes/config.route';
 import usersRouter from './routes/users.route';
 import postsRouter from './routes/posts.route';
 
@@ -16,7 +15,6 @@ require('dotenv').config();
 const app = express();
 
 passportConfig.jwtPassport(passport);
-passportConfig.facebookPassport(passport);
 
 app.use(passport.initialize());
 
@@ -27,7 +25,6 @@ app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' })); // API se
 
 app.use('/uploads', express.static('uploads'));
 
-app.use('/api/config', configRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/posts', postsRouter);
 

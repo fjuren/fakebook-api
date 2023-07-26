@@ -3,6 +3,7 @@ import * as usersController from '../controllers/users.controller';
 import * as usersValidation from '../utils/users.validation';
 import passport from 'passport';
 
+const checkAuthToken = passport.authenticate('jwt', { session: false });
 const router = express.Router();
 
 // Regular user authentication (signup)
@@ -19,16 +20,10 @@ router.post(
   usersController.login
 );
 
-// Facebook user authentication
-router.post(
-  '/login/facebook',
-  passport.authenticate('facebook-token'), // { session: false }
-  usersController.facebookLogin
-);
-
-router.get('');
-
 // User logout
 router.post('/logout', usersController.logout);
+
+// User information
+router.get('/profile', checkAuthToken, usersController.getUserProfile);
 
 export default router;

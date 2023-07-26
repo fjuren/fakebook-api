@@ -74,3 +74,22 @@ export const login = async (email: string, password: string) => {
     jwtToken: 'Bearer ' + jwtToken,
   };
 };
+
+export const findUser = async (userIDFromToken: string) => {
+  const user = await Users.findById(userIDFromToken);
+  if (user) {
+    const profileData = {
+      firstName: user.firstName as string,
+      lastName: user.lastName as string,
+      friendRequest: user.friendRequest as [],
+      userRequests: user.userRequests as [],
+      posts: user.posts as [],
+      avatar: user.avatar as string,
+    };
+    console.log(profileData);
+    return profileData;
+  } else {
+    // no data
+  }
+  // return user;
+};
