@@ -86,10 +86,8 @@ export const findUser = async (userIDFromToken: string) => {
       posts: user.posts as [],
       avatar: user.avatar as string,
     };
-    console.log(profileData);
     return profileData;
   } else {
     // no data
   }
-  // return user;
 };

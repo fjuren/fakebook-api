@@ -5,6 +5,7 @@ import * as postsServices from '../services/posts.services';
 import { IPosts, ErrorResponse } from '../models/posts.model';
 import * as handleErrors from '../utils/handleErrors';
 
+import { decodeToken } from '../utils/decodeToken';
 import { IUsers } from '../models/users.model';
 import Users from '../models/users.model';
 import Jwt, { JwtPayload } from 'jsonwebtoken';
@@ -58,16 +59,9 @@ export const createPost = async (
       });
     }
 
-    // get user information from jwt token
-    const secret = process.env.JWT_SECRET as string;
     const token = req.header('Authorization')?.replace('Bearer ', ''); // just extracting the token and removing Bearer
+    const decodedToken = decodeToken(token);
 
-    if (!token) {
-      throw new Error();
-    }
-
-    // decode token with secret, extract user id and find user from db
-    const decodedToken = Jwt.verify(token, secret) as JwtPayload;
     const userTokenID = decodedToken.user._id;
     const userID = await Users.findById(userTokenID);
 

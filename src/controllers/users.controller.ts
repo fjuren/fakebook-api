@@ -6,6 +6,7 @@ import * as handleErrors from '../utils/handleErrors';
 
 import Users from '../models/users.model';
 import Jwt, { JwtPayload } from 'jsonwebtoken';
+import { decodeToken } from '../utils/decodeToken';
 
 export const signup = async (
   req: Request,
@@ -117,18 +118,10 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
 
 export const getUserProfile = async (req: Request, res: Response) => {
   try {
-    // get user information from jwt token
-    const secret = process.env.JWT_SECRET as string;
     const token = req.header('Authorization')?.replace('Bearer ', ''); // just extracting the token and removing Bearer
+    const decodedToken = decodeToken(token);
 
-    if (!token) {
-      throw new Error();
-    }
-
-    // decode token with secret, extract user id and find user from db
-    const decodedToken = Jwt.verify(token, secret) as JwtPayload;
     const userIDFromToken = decodedToken.user._id;
-    // const userID = await Users.findById(userTokenID);
     const user = usersServices
       .findUser(userIDFromToken)
       .then((userProfileData) => {
