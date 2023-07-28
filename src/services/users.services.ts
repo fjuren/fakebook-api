@@ -12,6 +12,7 @@ export const signup = async (
   password: string,
   avatar?: string
 ) => {
+  var safeUser = {};
   const userExists = await Users.findOne({ email: email }).then((user) => {
     if (user) {
       // error 409 - data conflict
@@ -45,11 +46,21 @@ export const signup = async (
       expiresIn: '14d',
     }
   );
+  // extract only safe information that may be called to client side; not sensitive information
+  safeUser = {
+    _id: user._id, // safe to use ID since I'm using a token for authorization
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    avatar: user.avatar,
+    accountCreated: user.accountCreated,
+  };
 
-  return { user: user, jwtToken: 'Bearer ' + jwtToken };
+  return { safeUser: safeUser, jwtToken: 'Bearer ' + jwtToken };
 };
 
 export const login = async (email: string, password: string) => {
+  var safeUser = {};
   const user = await Users.findOne({ email: email }).then((user) => {
     // User not found from email given
     if (!user) {
@@ -61,7 +72,16 @@ export const login = async (email: string, password: string) => {
       throw new handleErrors.BadRequestError(
         'Password is incorrect. Please try again.'
       );
-    return user;
+    // extract only safe information that may be called to client side; not sensitive information
+    safeUser = {
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      avatar: user.avatar,
+      accountCreated: user.accountCreated,
+    };
+    return safeUser;
   });
 
   const jwtToken = jwt.sign({ user }, process.env.JWT_SECRET as string, {
@@ -70,7 +90,7 @@ export const login = async (email: string, password: string) => {
   });
 
   return {
-    user,
+    safeUser,
     jwtToken: 'Bearer ' + jwtToken,
   };
 };

@@ -27,7 +27,7 @@ export const signup = async (
 
     const { firstName, lastName, email, password, avatar } = req.body;
 
-    const { user, jwtToken } = await usersServices.signup(
+    const { safeUser, jwtToken } = await usersServices.signup(
       firstName,
       lastName,
       email,
@@ -39,7 +39,7 @@ export const signup = async (
       success: true,
       statusCode: 200,
       message: 'Account created successfully',
-      user,
+      user: safeUser,
       token: jwtToken,
     });
   } catch (e: any) {
@@ -79,13 +79,13 @@ export const login = async (
 
     const { email, password } = req.body;
 
-    const { user, jwtToken } = await usersServices.login(email, password);
+    const { safeUser, jwtToken } = await usersServices.login(email, password);
 
     res.status(200).json({
       success: true,
       statusCode: 200,
       message: 'User successfully logged in',
-      user: user,
+      user: safeUser,
       token: jwtToken,
     });
   } catch (e: any) {
@@ -130,7 +130,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
 
     // if (!userID) {
     if (!user) {
-      return res.status(404).json({ message: 'user not found' });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     // const userMongoID = userID?._id;

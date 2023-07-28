@@ -11,6 +11,5 @@ export const decodeToken = (token: any) => {
 
   // decode token with secret, extract user id and find user from db
   const decodedToken = Jwt.verify(token, secret) as JwtPayload;
-
   return decodedToken;
 };
