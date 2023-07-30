@@ -97,19 +97,28 @@ export const login = async (email: string, password: string) => {
 };
 
 export const findUser = async (userIDFromToken: string) => {
-  const user = await Users.findById(userIDFromToken);
-  if (user) {
-    const profileData = {
-      firstName: user.firstName as string,
-      lastName: user.lastName as string,
-      friends: user.friends as [],
-      friendRequest: user.friendRequest as [],
-      userRequests: user.userRequests as [],
-      posts: user.posts as [],
-      avatar: user.avatar as string,
-    };
-    return profileData;
-  } else {
-    // no data
+  try {
+    const user = await Users.findById(userIDFromToken).populate({
+      path: 'posts',
+      options: {
+        sort: { postCreated: -1 },
+      },
+    });
+    if (user) {
+      const profileData = {
+        firstName: user.firstName as string,
+        lastName: user.lastName as string,
+        friends: user.friends as [],
+        friendRequest: user.friendRequest as [],
+        userRequests: user.userRequests as [],
+        posts: user.posts as [],
+        avatar: user.avatar as string,
+      };
+      return profileData;
+    } else {
+      // no user data
+    }
+  } catch (err) {
+    throw err;
   }
 };

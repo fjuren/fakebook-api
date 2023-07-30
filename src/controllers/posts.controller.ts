@@ -86,7 +86,12 @@ export const createPost = async (
     }
     const user = userID?._id;
 
-    const newPost = await postsServices.createPost(content, fileURL, user);
+    const newPost = await postsServices.createPost(
+      content,
+      fileURL,
+      user,
+      userID
+    );
 
     res.status(200).json({
       success: true,

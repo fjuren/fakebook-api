@@ -1,6 +1,8 @@
 import { JwtPayload } from 'jsonwebtoken';
 import Posts from '../models/posts.model';
 import { IPosts } from '../models/posts.model';
+import Users from '../models/users.model';
+import { IUsers } from '../models/users.model';
 
 export const findAllPosts = async () => {
   const posts = await Posts.aggregate([
@@ -34,9 +36,10 @@ export const findAllPosts = async () => {
 export const createPost = async (
   content: string,
   fileURL: string | null,
-  user: string | JwtPayload
+  user: string | JwtPayload,
+  userID: any
 ): Promise<IPosts> => {
-  const posts = new Posts({
+  const post = new Posts({
     content: content,
     image: fileURL,
     likes: [],
@@ -45,8 +48,20 @@ export const createPost = async (
     postCreate: Date.now,
   });
 
-  await posts.save();
+  // Add post to user document under user.posts
+  await Users.findByIdAndUpdate(
+    userID,
+    { $push: { posts: post } },
+    { new: true }
+  )
+    .then((updatedUser) => {
+      post.save();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
   //   // TODO
   //   // [ ] Update error handling
-  return posts;
+  return post;
 };
