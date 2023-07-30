@@ -28,6 +28,7 @@ export const signup = async (
     lastName,
     email,
     password: bcrypt.hashSync(password, saltRounds),
+    friends: [],
     friendRequest: [],
     userRequests: [],
     posts: [],
@@ -101,6 +102,7 @@ export const findUser = async (userIDFromToken: string) => {
     const profileData = {
       firstName: user.firstName as string,
       lastName: user.lastName as string,
+      friends: user.friends as [],
       friendRequest: user.friendRequest as [],
       userRequests: user.userRequests as [],
       posts: user.posts as [],

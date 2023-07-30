@@ -30,6 +30,7 @@ const seedUsers = () => {
       lastName: faker.name.lastName(),
       email: faker.internet.email(),
       password: faker.internet.password(20, true),
+      friends: [],
       friendRequest: [],
       userRequests: [],
       posts: [],
