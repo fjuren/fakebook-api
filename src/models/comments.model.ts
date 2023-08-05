@@ -1,6 +1,6 @@
 import { Schema, model, Types } from 'mongoose';
 
-interface IComments {
+export interface IComments {
   content: string;
   userLikes?: Types.ObjectId[];
   user: Types.ObjectId;

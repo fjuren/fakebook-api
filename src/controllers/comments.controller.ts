@@ -1,9 +1,11 @@
 require('dotenv').config();
 import { Response, Request, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
-import * as postsServices from '../services/posts.services';
-// import { IComments, ErrorResponse } from '../models/comments.model';
+import * as commentsServices from '../services/comments.services';
 import * as handleErrors from '../utils/handleErrors';
+import { decodeToken } from '../utils/decodeToken';
+import Users from '../models/users.model';
+import Posts from '../models/posts.model';
 
 export const createComment = async (
   req: Request,
@@ -21,7 +23,34 @@ export const createComment = async (
       });
     }
 
-    console.log(req.body);
+    const token = req.header('Authorization')?.replace('Bearer ', ''); // just extracting the token and removing Bearer
+    const decodedToken = decodeToken(token);
+
+    const userTokenID = decodedToken.user._id;
+    const userID = await Users.findById(userTokenID);
+
+    if (!userID) {
+      return res.status(404).json({ message: 'user not found' });
+    }
+
+    const { content, postID } = req.body;
+    const user = userID?._id;
+    // const postObjID = await Posts.findById(postID);
+
+    const newComment = await commentsServices.createComment(
+      content,
+      user,
+      userID,
+      postID
+    );
+
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message:
+        'comment created. Applicable User & Post documents updated with new comment',
+      newComment,
+    });
   } catch (e: any) {
     if (e instanceof handleErrors.ConflictError) {
       res.status(e.statusCode).json({

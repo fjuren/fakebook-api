@@ -30,7 +30,7 @@ const postsSchema = new Schema<IPosts>({
   comments: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Users',
+      ref: 'Comments',
     },
   ],
   postCreated: { type: Date, default: Date.now, required: true },

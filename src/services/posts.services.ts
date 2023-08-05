@@ -45,7 +45,7 @@ export const createPost = async (
     likes: [],
     user: user,
     comments: [],
-    postCreate: Date.now,
+    postCreated: Date.now,
   });
 
   // Add post to user document under user.posts
@@ -53,13 +53,9 @@ export const createPost = async (
     userID,
     { $push: { posts: post } },
     { new: true }
-  )
-    .then((updatedUser) => {
-      post.save();
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+  );
+
+  await post.save();
 
   //   // TODO
   //   // [ ] Update error handling
