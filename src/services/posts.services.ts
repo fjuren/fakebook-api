@@ -14,16 +14,46 @@ export const findAllPosts = async () => {
         as: 'user',
       },
     },
+    { $unwind: '$user' },
     {
       $project: {
-        user: {
-          password: 0, // removes password from reponse for security of user password
-        },
+        'user.password': 0,
+        'user.accountCreated': 0,
+        'user.email': 0,
+        'user.posts': 0,
+        'user.userRequests': 0,
+        'user.friendRequests': 0,
       },
     },
-    { $unwind: '$user' },
+    {
+      $lookup: {
+        from: 'comments',
+        let: { commentIds: '$comments' },
+        pipeline: [
+          { $match: { $expr: { $in: ['$_id', '$$commentIds'] } } },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'user',
+              foreignField: '_id',
+              as: 'user',
+            },
+          },
+          { $unwind: '$user' },
+          {
+            $project: {
+              content: 1,
+              user: { _id: 1, username: 1 },
+              commentCreated: 1,
+            },
+          },
+          { $sort: { commentCreated: -1 } },
+        ],
+        as: 'comments',
+      },
+    },
     { $sort: { postCreated: -1 } },
-    { $limit: 10 },
+    { $limit: 3 },
   ])
     // .limit(10)
     .exec()

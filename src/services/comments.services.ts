@@ -10,9 +10,6 @@ export const createComment = async (
   userID: any,
   postID: any
 ) => {
-  console.log('user: ' + user);
-  console.log('userID: ' + userID);
-  console.log('postID: ' + user);
   try {
     const comment = new CommentsModelling({
       content: content,
