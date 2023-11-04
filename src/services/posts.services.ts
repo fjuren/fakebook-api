@@ -53,7 +53,7 @@ export const findAllPosts = async () => {
       },
     },
     { $sort: { postCreated: -1 } },
-    { $limit: 3 },
+    { $limit: 5 },
   ])
     // .limit(10)
     .exec()
@@ -61,6 +61,32 @@ export const findAllPosts = async () => {
       return result;
     });
   return posts;
+};
+
+export const findUserPosts = async (userID: any) => {
+  try {
+    console.log(userID);
+    const userProfilePosts = await Users.findById(userID).populate({
+      path: 'posts',
+      options: {
+        sort: { postCreated: -1 },
+      },
+      populate: {
+        path: 'user',
+        model: 'Users',
+      },
+    });
+    if (userProfilePosts) {
+      const postData = {
+        posts: userProfilePosts.posts as [],
+      };
+      return postData;
+    } else {
+      // no post data
+    }
+  } catch (err) {
+    throw err;
+  }
 };
 
 export const createPost = async (

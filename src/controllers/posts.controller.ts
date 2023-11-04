@@ -43,6 +43,52 @@ export const getPosts = async (
   }
 };
 
+export const getUserProfilePosts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // TODO create helper function for getting UserID token. Used in several places
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    // just extracting the token and removing Bearer
+    const decodedToken = decodeToken(token);
+
+    const userTokenID = decodedToken.user._id;
+    const userID = await Users.findById(userTokenID);
+
+    if (!userID) {
+      // TODO: update error handling. See getPosts above for example
+      return res.status(404).json({ message: 'user not found' });
+    }
+    // TODO update the ID constants here and in createPost. They are confusing!!
+    const userRealID = userID?._id;
+
+    const userProfilePosts = await postsServices.findUserPosts(userRealID);
+    res.status(200).json(userProfilePosts);
+  } catch (e: any) {
+    console.log(e);
+
+    const errorResponse: ErrorResponse = {
+      success: e.success,
+      name: e.name,
+      statusCode: e.statusCode,
+      error: e.message,
+    };
+
+    // TODO needs testing
+    if (e instanceof handleErrors.UnauthorizedError) {
+      res.status(e.statusCode).json(errorResponse);
+    }
+    res.status(500).json({
+      success: false,
+      name: 'Internal server error',
+      statusCode: 500,
+      error: 'Server error',
+    });
+  }
+};
+
 export const createPost = async (
   req: Request,
   res: Response,

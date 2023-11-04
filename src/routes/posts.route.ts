@@ -10,6 +10,8 @@ const router = express.Router();
 
 router.get('/timeline', checkAuthToken, postsController.getPosts);
 
+router.get('/profile', checkAuthToken, postsController.getUserProfilePosts);
+
 // Create
 router.post(
   '/create_post',
