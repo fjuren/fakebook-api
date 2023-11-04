@@ -71,10 +71,13 @@ export const findUserPosts = async (userID: any) => {
       options: {
         sort: { postCreated: -1 },
       },
-      populate: {
-        path: 'user',
-        model: 'Users',
-      },
+      populate: [
+        {
+          path: 'user',
+          model: 'Users',
+        },
+        { path: 'comments', model: 'Comments' },
+      ],
     });
     if (userProfilePosts) {
       const postData = {
