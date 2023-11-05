@@ -65,7 +65,6 @@ export const findAllPosts = async () => {
 
 export const findUserPosts = async (userID: any) => {
   try {
-    console.log(userID);
     const userProfilePosts = await Users.findById(userID).populate({
       path: 'posts',
       options: {
@@ -95,21 +94,21 @@ export const findUserPosts = async (userID: any) => {
 export const createPost = async (
   content: string,
   fileURL: string | null,
-  user: string | JwtPayload,
-  userID: any
+  userId: string | JwtPayload,
+  user: any
 ): Promise<IPosts> => {
   const post = new Posts({
     content: content,
     image: fileURL,
     likes: [],
-    user: user,
+    user: userId,
     comments: [],
-    postCreated: Date.now,
+    postCreated: Date.now(),
   });
 
   // Add post to user document under user.posts
   await Users.findByIdAndUpdate(
-    userID,
+    user,
     { $push: { posts: post } },
     { new: true }
   );

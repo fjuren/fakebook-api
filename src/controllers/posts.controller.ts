@@ -55,16 +55,15 @@ export const getUserProfilePosts = async (
     const decodedToken = decodeToken(token);
 
     const userTokenID = decodedToken.user._id;
-    const userID = await Users.findById(userTokenID);
+    const user = await Users.findById(userTokenID);
 
-    if (!userID) {
+    if (!user) {
       // TODO: update error handling. See getPosts above for example
       return res.status(404).json({ message: 'user not found' });
     }
-    // TODO update the ID constants here and in createPost. They are confusing!!
-    const userRealID = userID?._id;
+    const userId = user?._id;
 
-    const userProfilePosts = await postsServices.findUserPosts(userRealID);
+    const userProfilePosts = await postsServices.findUserPosts(userId);
     res.status(200).json(userProfilePosts);
   } catch (e: any) {
     console.log(e);
@@ -109,9 +108,9 @@ export const createPost = async (
     const decodedToken = decodeToken(token);
 
     const userTokenID = decodedToken.user._id;
-    const userID = await Users.findById(userTokenID);
+    const user = await Users.findById(userTokenID);
 
-    if (!userID) {
+    if (!user) {
       return res.status(404).json({ message: 'user not found' });
     }
 
@@ -130,13 +129,13 @@ export const createPost = async (
       fileURL = ''; // schema expects a string
       filePath = '';
     }
-    const user = userID?._id;
+    const userId = user?._id;
 
     const newPost = await postsServices.createPost(
       content,
       fileURL,
-      user,
-      userID
+      userId,
+      user
     );
 
     res.status(200).json({
