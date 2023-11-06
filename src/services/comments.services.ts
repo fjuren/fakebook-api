@@ -6,15 +6,15 @@ import { IComments } from '../models/comments.model';
 
 export const createComment = async (
   content: string,
-  user: string | JwtPayload,
-  userID: any,
+  userId: string | JwtPayload,
+  user: any,
   postID: any
 ) => {
   try {
     const comment = new CommentsModelling({
       content: content,
       userLikes: [],
-      user: user,
+      user: userId,
       commentCreated: Date.now(),
     });
 
@@ -30,7 +30,7 @@ export const createComment = async (
 
     // Add comment to user document under user.comments
     await Users.findByIdAndUpdate(
-      userID,
+      user,
       { $push: { comments: comment._id } },
       { new: true }
     );

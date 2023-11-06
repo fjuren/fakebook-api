@@ -2,14 +2,14 @@ import { Schema, model, Types } from 'mongoose';
 
 export interface IComments {
   content: string;
-  userLikes?: Types.ObjectId[];
+  commentLikes?: Types.ObjectId[];
   user: Types.ObjectId;
   commentCreated: Date; // note: This is stored in an ISO 8601 format and is UTC
 }
 
 const commentsSchema = new Schema<IComments>({
   content: { type: String, required: true },
-  userLikes: [
+  commentLikes: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Users',

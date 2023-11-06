@@ -64,7 +64,12 @@ export const getUserProfilePosts = async (
     const userId = user?._id;
 
     const userProfilePosts = await postsServices.findUserPosts(userId);
-    res.status(200).json(userProfilePosts);
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Post created',
+      userProfilePosts,
+    });
   } catch (e: any) {
     console.log(e);
 

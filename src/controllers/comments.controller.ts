@@ -27,20 +27,20 @@ export const createComment = async (
     const decodedToken = decodeToken(token);
 
     const userTokenID = decodedToken.user._id;
-    const userID = await Users.findById(userTokenID);
+    const user = await Users.findById(userTokenID);
 
-    if (!userID) {
+    if (!user) {
       return res.status(404).json({ message: 'user not found' });
     }
 
     const { content, postID } = req.body;
-    const user = userID?._id;
+    const userId = user?._id;
     // const postObjID = await Posts.findById(postID);
 
     const newComment = await commentsServices.createComment(
       content,
+      userId,
       user,
-      userID,
       postID
     );
 

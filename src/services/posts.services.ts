@@ -22,7 +22,8 @@ export const findAllPosts = async () => {
         'user.email': 0,
         'user.posts': 0,
         'user.userRequests': 0,
-        'user.friendRequests': 0,
+        'user.friendRequest': 0,
+        'user.comments': 0,
       },
     },
     {
@@ -43,7 +44,7 @@ export const findAllPosts = async () => {
           {
             $project: {
               content: 1,
-              user: { _id: 1, username: 1 },
+              user: { _id: 1, firstName: 1, lastName: 1, avatar: 1 },
               commentCreated: 1,
             },
           },
@@ -74,8 +75,21 @@ export const findUserPosts = async (userID: any) => {
         {
           path: 'user',
           model: 'Users',
+          select:
+            '-accountCreated -email -friendRequest -friends -password -posts -userRequests -comments',
         },
-        { path: 'comments', model: 'Comments' },
+        {
+          path: 'comments',
+          model: 'Comments',
+          populate: [
+            {
+              path: 'user',
+              model: 'Users',
+              select:
+                '-accountCreated -email -friendRequest -friends -password -posts -userRequests -comments',
+            },
+          ],
+        },
       ],
     });
     if (userProfilePosts) {
