@@ -133,3 +133,14 @@ export const createPost = async (
   //   // [ ] Update error handling
   return post;
 };
+
+export const handleLike = async (userId: any, postID: string) => {
+  try {
+    // Find the post by ID
+    const post = await Posts.findById(postID);
+
+    // const addLike = await Posts.findByIdAndUpdate(
+    //   postID
+    // );
+  } catch (err) {}
+};

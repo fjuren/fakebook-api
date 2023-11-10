@@ -168,3 +168,33 @@ export const createPost = async (
     }
   }
 };
+
+export const likePost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    // just extracting the token and removing Bearer
+    const decodedToken = decodeToken(token);
+
+    const userTokenID = decodedToken.user._id;
+    const user = await Users.findById(userTokenID);
+
+    if (!user) {
+      return res.status(404).json({ message: 'user not found' });
+    }
+    const userId = user?._id;
+    const postID = req.body.postID;
+
+    const handlePostLike = await postsServices.handleLike(userId, postID);
+
+    // res.status(200).json({
+    //   success: true,
+    //   statusCode: 200,
+    //   message: 'Post created',
+    //   handlePostLike,
+    // });
+  } catch (err) {}
+};

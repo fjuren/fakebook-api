@@ -3,6 +3,7 @@ import * as postsController from '../controllers/posts.controller';
 import * as postValidation from '../utils/posts.validation';
 import passport from 'passport';
 import { upload } from '../config/multer';
+import { checkSchema } from 'express-validator';
 
 // protects the route by checking if valid token
 const checkAuthToken = passport.authenticate('jwt', { session: false });
@@ -23,5 +24,8 @@ router.post(
 
 // Delete
 router.delete('/:postId');
+
+// Like post
+router.post('/like_post', checkAuthToken, postsController.likePost);
 
 export default router;
