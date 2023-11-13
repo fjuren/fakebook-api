@@ -138,9 +138,27 @@ export const handleLike = async (userId: any, postID: string) => {
   try {
     // Find the post by ID
     const post = await Posts.findById(postID);
+    if (!post) {
+      throw {
+        message:
+          'There was an error related to the post or the post does not exist',
+      };
+    }
+    // console.log('post.likes before:', post.likes);
+    // console.log('userId:', userId);
+    // check if the user previously liked the post
+    const isLiked = post.likes?.some((like) => like.equals(userId));
+    // console.log('isLiked:', isLiked);
+    if (isLiked) {
+      post.likes = post.likes?.filter((like) => !like.equals(userId)) || [];
+    } else {
+      post.likes?.push(userId);
+    }
+    // console.log('post.likes after: ', post.likes);
+    await post.save();
 
-    // const addLike = await Posts.findByIdAndUpdate(
-    //   postID
-    // );
-  } catch (err) {}
+    return post;
+  } catch (err) {
+    throw err;
+  }
 };

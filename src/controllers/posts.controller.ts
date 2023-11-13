@@ -185,16 +185,36 @@ export const likePost = async (
     if (!user) {
       return res.status(404).json({ message: 'user not found' });
     }
-    const userId = user?._id;
+    if (!req.body.postID) {
+      return res.status(404).json({ message: 'post not found' });
+    }
+    const userId = user._id;
     const postID = req.body.postID;
 
     const handlePostLike = await postsServices.handleLike(userId, postID);
 
-    // res.status(200).json({
-    //   success: true,
-    //   statusCode: 200,
-    //   message: 'Post created',
-    //   handlePostLike,
-    // });
-  } catch (err) {}
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Post like updated',
+      handlePostLike,
+    });
+  } catch (e: any) {
+    if (e instanceof handleErrors.ConflictError) {
+      res.status(e.statusCode).json({
+        success: e.success,
+        name: e.name,
+        statusCode: e.statusCode,
+        error: e.message,
+      });
+    } else {
+      res.status(500).json({
+        msg: e.message,
+        success: false,
+        name: 'Internal server error',
+        statusCode: 500,
+        error: 'Server error',
+      });
+    }
+  }
 };

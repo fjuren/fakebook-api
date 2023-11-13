@@ -25,7 +25,7 @@ router.post(
 // Delete
 router.delete('/:postId');
 
-// Like post
+// Like/unlike post
 router.post('/like_post', checkAuthToken, postsController.likePost);
 
 export default router;
