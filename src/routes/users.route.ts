@@ -23,7 +23,7 @@ router.post(
 // User logout
 router.post('/logout', usersController.logout);
 
-// User information
-router.get('/profile', checkAuthToken, usersController.getUserProfile);
+// Get user profile
+router.get('/profile/:id', checkAuthToken, usersController.getUserProfile);
 
 export default router;
