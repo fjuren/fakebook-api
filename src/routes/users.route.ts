@@ -24,6 +24,6 @@ router.post(
 router.post('/logout', usersController.logout);
 
 // Get user profile
-router.get('/profile/:id', checkAuthToken, usersController.getUserProfile);
+router.get('/profile/:userID', checkAuthToken, usersController.getUserProfile);
 
 export default router;

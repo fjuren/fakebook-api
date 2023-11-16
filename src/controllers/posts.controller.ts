@@ -49,13 +49,7 @@ export const getUserProfilePosts = async (
   next: NextFunction
 ) => {
   try {
-    // TODO create helper function for getting UserID token. Used in several places
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    // just extracting the token and removing Bearer
-    const decodedToken = decodeToken(token);
-
-    const userTokenID = decodedToken.user._id;
-    const user = await Users.findById(userTokenID);
+    const user = await Users.findById(req.params.userID);
 
     if (!user) {
       // TODO: update error handling. See getPosts above for example

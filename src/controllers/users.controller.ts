@@ -118,11 +118,8 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
 
 export const getUserProfile = async (req: Request, res: Response) => {
   try {
-    // const token = req.header('Authorization')?.replace('Bearer ', ''); // just extracting the token and removing Bearer
-    // const decodedToken = decodeToken(token);
-    // const userIDFromToken = decodedToken.user._id;
     const user = usersServices
-      .findUser(req.params.id)
+      .findUser(req.params.userID)
       .then((userProfileData) => {
         res.status(200).json(userProfileData);
       });
