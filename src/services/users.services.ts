@@ -122,3 +122,27 @@ export const findUser = async (userIDFromToken: string) => {
     throw err;
   }
 };
+
+export const addFriendRequest = async (
+  friendRequesteeID: string,
+  friendRequestorID: string
+) => {
+  try {
+    // Find the friendRequestee user by ID
+    const friendRequestee: IUsers | any = await Users.findById(
+      friendRequesteeID
+    );
+
+    if (!friendRequestee || friendRequestee == undefined) {
+      throw new Error('Friend requestee not found');
+    } else {
+      // Add the friendRequestor to the friendRequestee's friendRequest array
+      friendRequestee.friendRequest.push(friendRequestorID);
+    }
+
+    const friendRequesteeUpdated = await friendRequestee.save();
+    return friendRequesteeUpdated;
+  } catch (err) {
+    throw err;
+  }
+};

@@ -20,10 +20,17 @@ router.post(
   usersController.login
 );
 
-// User logout
-router.post('/logout', usersController.logout);
-
 // Get user profile
 router.get('/profile/:userID', checkAuthToken, usersController.getUserProfile);
+
+// Post friend request. This allows a user to request a friend
+router.post(
+  '/friend_request/:userID',
+  checkAuthToken,
+  usersController.postFriendRequest
+);
+
+// User logout
+router.post('/logout', usersController.logout);
 
 export default router;

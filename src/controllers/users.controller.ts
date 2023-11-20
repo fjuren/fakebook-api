@@ -107,15 +107,6 @@ export const login = async (
   }
 };
 
-export const logout = (req: Request, res: Response, next: NextFunction) => {
-  // TODO I need to check if there are any cleanup tasks I can do
-  res.json({
-    success: true,
-    statusCode: 200,
-    message: 'User successfully logged out',
-  });
-};
-
 export const getUserProfile = async (req: Request, res: Response) => {
   try {
     const user = usersServices
@@ -152,4 +143,53 @@ export const getUserProfile = async (req: Request, res: Response) => {
       error: 'Server error',
     });
   }
+};
+
+export const postFriendRequest = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const friendRequestee = req.body.userID;
+    const friendRequestor = req.body.authedUserID;
+
+    usersServices
+      .addFriendRequest(friendRequestee, friendRequestor)
+      .then(() => {
+        res.status(200).json({
+          success: true,
+          statusCode: 200,
+          message: 'Friend successfully sent',
+        });
+      });
+  } catch (e: any) {
+    const errorResponse = {
+      // TODO create interface for user ErrorResponse. See posts.ctonroller
+      success: e.success,
+      name: e.name,
+      statusCode: e.statusCode,
+      error: e.message,
+    };
+
+    // TODO needs testing
+    if (e instanceof handleErrors.UnauthorizedError) {
+      res.status(e.statusCode).json(errorResponse);
+    }
+    res.status(500).json({
+      success: false,
+      name: 'Internal server error',
+      statusCode: 500,
+      error: 'Server error',
+    });
+  }
+};
+
+export const logout = (req: Request, res: Response, next: NextFunction) => {
+  // TODO I need to check if there are any cleanup tasks I can do
+  res.json({
+    success: true,
+    statusCode: 200,
+    message: 'User successfully logged out',
+  });
 };
