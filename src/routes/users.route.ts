@@ -30,6 +30,8 @@ router.post(
   usersController.postFriendRequest
 );
 
+router.get('/friends/', checkAuthToken, usersController.getAllFriendRequests);
+
 // User logout
 router.post('/logout', usersController.logout);
 

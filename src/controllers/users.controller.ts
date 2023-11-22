@@ -185,6 +185,47 @@ export const postFriendRequest = async (
   }
 };
 
+export const getAllFriendRequests = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userOrAuthUserID = req.query.userOrAuthUserID as string;
+    const authedUserID = req.query.authedUserID as string;
+
+    usersServices
+      .userAllFriendRequests(userOrAuthUserID, authedUserID)
+      .then((userFriendData) => {
+        res.status(200).json({
+          success: true,
+          statusCode: 200,
+          message: 'Permitted data returned',
+          userFriendData,
+        });
+      });
+  } catch (e: any) {
+    const errorResponse = {
+      // TODO create interface for user ErrorResponse. See posts.ctonroller
+      success: e.success,
+      name: e.name,
+      statusCode: e.statusCode,
+      error: e.message,
+    };
+
+    // TODO needs testing
+    if (e instanceof handleErrors.UnauthorizedError) {
+      res.status(e.statusCode).json(errorResponse);
+    }
+    res.status(500).json({
+      success: false,
+      name: 'Internal server error',
+      statusCode: 500,
+      error: 'Server error',
+    });
+  }
+};
+
 export const logout = (req: Request, res: Response, next: NextFunction) => {
   // TODO I need to check if there are any cleanup tasks I can do
   res.json({

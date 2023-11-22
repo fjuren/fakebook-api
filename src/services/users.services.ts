@@ -146,3 +146,60 @@ export const addFriendRequest = async (
     throw err;
   }
 };
+
+export const userAllFriendRequests = async (
+  userOrAuthUserID: string,
+  authedUserID: string
+) => {
+  try {
+    // Determine which user friends list is being requested and whether it's 1) the same as the current authed user, 2) some other user and 3) if 2 is true, whether the two users are 'friends'
+    // rules:
+    // 1. a user accessing their own 'friends' page should see everything
+    // 2. a user accessing their friend's 'friends' page should only show who the user is friend's with
+    // 3. a user accessing a random user's 'friend's page should not see any of this information. They should ONLY be able to requst being friends with the user but from the profile page (completely separate page to where this api call is coming from)
+
+    const userFriendsRequestsAndFriends = await Users.findById(userOrAuthUserID)
+      .select('friendRequest friends')
+      .populate({
+        path: 'friendRequest',
+        select: 'firstName lastName avatar friends',
+      })
+      .populate({
+        path: 'friends',
+        select: 'firstName lastName avatar friends',
+      });
+
+    const allUserFriendData = userFriendsRequestsAndFriends;
+
+    const userFriends = await Users.findById(userOrAuthUserID)
+      .select('friends')
+      .populate({
+        path: 'friends',
+        select: 'firstName lastName avatar friends',
+      });
+
+    const userFriendsOnly = userFriends;
+
+    // if true, rule 1 applies
+    if (userOrAuthUserID == authedUserID) {
+      return allUserFriendData;
+    }
+    // if ture, rule 2 applies
+    if (
+      userOrAuthUserID != authedUserID &&
+      allUserFriendData?.friends?.some((friendID) =>
+        friendID.equals(authedUserID)
+      )
+    ) {
+      return userFriendsOnly;
+      // if true, rule 3 applies
+    } else {
+      return false;
+    }
+
+    // const friendRequesteeUpdated = await friendRequestee.save();
+    // return friendRequesteeUpdated;
+  } catch (err) {
+    throw err;
+  }
+};
