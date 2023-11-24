@@ -23,6 +23,7 @@ const usersSchema = new mongoose.Schema<IUsers>({
   friends: [
     {
       type: mongoose.Schema.Types.ObjectId,
+      ref: 'Users',
     },
   ],
   friendRequest: [

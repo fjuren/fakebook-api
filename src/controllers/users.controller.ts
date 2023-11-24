@@ -185,6 +185,47 @@ export const postFriendRequest = async (
   }
 };
 
+export const postFriendRequestAnswer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const requestAnswer = req.body.acceptOrDecline;
+    const userID = req.body.userID;
+    const authedUserID = req.body.authedUserID;
+
+    usersServices
+      .acceptOrDeclineRequest(requestAnswer, userID, authedUserID)
+      .then((response) => {
+        res.status(200).json({
+          success: true,
+          statusCode: 200,
+          message: 'Friend request successfully ' + response,
+        });
+      });
+  } catch (e: any) {
+    const errorResponse = {
+      // TODO create interface for user ErrorResponse. See posts.ctonroller
+      success: e.success,
+      name: e.name,
+      statusCode: e.statusCode,
+      error: e.message,
+    };
+
+    // TODO needs testing
+    if (e instanceof handleErrors.UnauthorizedError) {
+      res.status(e.statusCode).json(errorResponse);
+    }
+    res.status(500).json({
+      success: false,
+      name: 'Internal server error',
+      statusCode: 500,
+      error: 'Server error',
+    });
+  }
+};
+
 export const getAllFriendRequests = async (
   req: Request,
   res: Response,

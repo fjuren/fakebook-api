@@ -147,6 +147,37 @@ export const addFriendRequest = async (
   }
 };
 
+export const acceptOrDeclineRequest = async (
+  requestAnswer: boolean,
+  userID: string,
+  authedUserID: string
+) => {
+  try {
+    // if true, move id of requesting friend from friendRequest to friend
+    if (requestAnswer) {
+      // Find the friendRequestee user by ID
+      await Users.findByIdAndUpdate(
+        authedUserID,
+        {
+          $pull: { friendRequest: userID }, // remove userID from friend request
+          $addToSet: { friends: userID }, // adds userID to friends list (fyi if it's already there, it won't add a duplicate value)
+        },
+        { new: true }
+      );
+      return 'Friend request accepted';
+    } else {
+      await Users.findByIdAndUpdate(
+        authedUserID,
+        { $pull: { friendRequest: userID } },
+        { new: true }
+      );
+      return 'Friend request declined and deleted';
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const userAllFriendRequests = async (
   userOrAuthUserID: string,
   authedUserID: string
@@ -163,11 +194,20 @@ export const userAllFriendRequests = async (
       .populate({
         path: 'friendRequest',
         select: 'firstName lastName avatar friends',
+        populate: {
+          path: 'friends',
+          select: 'firstName lastName avatar friends',
+        },
       })
       .populate({
         path: 'friends',
         select: 'firstName lastName avatar friends',
-      });
+        populate: {
+          path: 'friends',
+          select: 'firstName lastName avatar friends',
+        },
+      })
+      .exec();
 
     const allUserFriendData = userFriendsRequestsAndFriends;
 
@@ -176,7 +216,12 @@ export const userAllFriendRequests = async (
       .populate({
         path: 'friends',
         select: 'firstName lastName avatar friends',
-      });
+        populate: {
+          path: 'friends',
+          select: 'firstName lastName avatar friends',
+        },
+      })
+      .exec();
 
     const userFriendsOnly = userFriends;
 
