@@ -226,6 +226,47 @@ export const postFriendRequestAnswer = async (
   }
 };
 
+export const unFriend = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const unFriendRequest = req.body.unfriend;
+    const friendToBeRemovedID = req.body.userID;
+    const authedUserID = req.body.authedUserID;
+
+    usersServices
+      .unFriend(unFriendRequest, friendToBeRemovedID, authedUserID)
+      .then(() => {
+        res.status(200).json({
+          success: true,
+          statusCode: 200,
+          message: 'Friend successfully unfriended',
+        });
+      });
+  } catch (e: any) {
+    const errorResponse = {
+      // TODO create interface for user ErrorResponse. See posts.ctonroller
+      success: e.success,
+      name: e.name,
+      statusCode: e.statusCode,
+      error: e.message,
+    };
+
+    // TODO needs testing
+    if (e instanceof handleErrors.UnauthorizedError) {
+      res.status(e.statusCode).json(errorResponse);
+    }
+    res.status(500).json({
+      success: false,
+      name: 'Internal server error',
+      statusCode: 500,
+      error: 'Server error',
+    });
+  }
+};
+
 export const getAllFriendRequests = async (
   req: Request,
   res: Response,

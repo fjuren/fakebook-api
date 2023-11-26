@@ -178,6 +178,28 @@ export const acceptOrDeclineRequest = async (
   }
 };
 
+export const unFriend = async (
+  unFriendRequest: boolean,
+  friendToBeRemovedID: string,
+  authedUserID: string
+) => {
+  try {
+    if (unFriendRequest) {
+      // remove the friend from the authedUser's friend's list
+      await Users.findByIdAndUpdate(
+        authedUserID,
+        {
+          $pull: { friends: friendToBeRemovedID }, // remove userID from friend request
+        },
+        { new: true }
+      );
+      return `${friendToBeRemovedID} removed from ${authedUserID}'s friends list`;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const userAllFriendRequests = async (
   userOrAuthUserID: string,
   authedUserID: string

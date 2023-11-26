@@ -2,6 +2,7 @@ import express from 'express';
 import * as usersController from '../controllers/users.controller';
 import * as usersValidation from '../utils/users.validation';
 import passport from 'passport';
+import { check } from 'express-validator';
 
 const checkAuthToken = passport.authenticate('jwt', { session: false });
 const router = express.Router();
@@ -36,6 +37,8 @@ router.post(
   checkAuthToken,
   usersController.postFriendRequestAnswer
 );
+
+router.post('/unfriend/:userID', checkAuthToken, usersController.unFriend);
 
 router.get('/friends/', checkAuthToken, usersController.getAllFriendRequests);
 
