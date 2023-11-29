@@ -17,8 +17,11 @@ export const getPosts = async (
   res: Response<IPosts[] | ErrorResponse>,
   next: NextFunction
 ) => {
+  // for infinite scrolling
+  const { page = 1, limit = 10 } = req.query;
+
   try {
-    const posts = await postsServices.findAllPosts();
+    const posts = await postsServices.findAllPosts(page, limit);
     res.status(200).json(posts);
   } catch (e: any) {
     console.log(e);

@@ -4,7 +4,9 @@ import { IPosts } from '../models/posts.model';
 import Users from '../models/users.model';
 import { IUsers } from '../models/users.model';
 
-export const findAllPosts = async () => {
+export const findAllPosts = async (page: any, limit: any) => {
+  const skip = (page - 1) * limit; // calculates how many docs to skip (supports infinite scrolling functionality)
+
   const posts = await Posts.aggregate([
     {
       $lookup: {
@@ -54,7 +56,8 @@ export const findAllPosts = async () => {
       },
     },
     { $sort: { postCreated: -1 } },
-    { $limit: 5 },
+    { $skip: skip }, // added for infinite scrolling functionality
+    { $limit: limit },
   ])
     // .limit(10)
     .exec()
