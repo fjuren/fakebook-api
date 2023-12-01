@@ -18,7 +18,7 @@ export const getPosts = async (
   next: NextFunction
 ) => {
   // for infinite scrolling
-  const { page = 1, limit = 10 } = req.query;
+  const { page, limit = 10 } = req.query;
 
   try {
     const posts = await postsServices.findAllPosts(page, limit);
