@@ -1,4 +1,5 @@
 import express from 'express';
+import path, { dirname } from 'path';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -24,7 +25,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' })); // API security allows request from other origins
 
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use('/api/comments', commentsRouter);
 app.use('/api/users', usersRouter);

@@ -145,6 +145,56 @@ export const getUserProfile = async (req: Request, res: Response) => {
   }
 };
 
+export const updateProfilePic = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const authedUserID = req.params.authedUserID;
+    const profileImageData = req.file;
+
+    // TODO do some validation
+    if (!profileImageData) {
+      throw 'error';
+    }
+
+    const encodedFileURL = encodeURIComponent(profileImageData.filename);
+
+    const fileURL =
+      process.env.NODE_ENV === 'production'
+        ? `/uploads/${encodedFileURL}`
+        : `http://localhost:3000/uploads/${encodedFileURL}`;
+
+    usersServices.updateProfilePicture(fileURL, authedUserID).then(() => {
+      res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: 'Profile picture updated successfully',
+      });
+    });
+  } catch (e: any) {
+    const errorResponse = {
+      // TODO create interface for user ErrorResponse. See posts.ctonroller
+      success: e.success,
+      name: e.name,
+      statusCode: e.statusCode,
+      error: e.message,
+    };
+
+    // TODO needs testing
+    if (e instanceof handleErrors.UnauthorizedError) {
+      res.status(e.statusCode).json(errorResponse);
+    }
+    res.status(500).json({
+      success: false,
+      name: 'Internal server error',
+      statusCode: 500,
+      error: 'Server error',
+    });
+  }
+};
+
 export const postFriendRequest = async (
   req: Request,
   res: Response,
