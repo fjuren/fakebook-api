@@ -30,6 +30,7 @@ router.post(
   '/update_profile_pic/:authedUserID',
   checkAuthToken,
   upload.single('file'),
+  usersValidation.profilePicUploadValidation,
   usersController.updateProfilePic
 );
 

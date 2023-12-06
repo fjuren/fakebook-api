@@ -127,22 +127,22 @@ export const updateProfilePicture = async (
   fileURL: string,
   authedUserID: string
 ) => {
-  console.log(fileURL);
+  // console.log(fileURL);
   try {
-    if (fileURL) {
-      await Users.findByIdAndUpdate(
-        authedUserID,
-        {
-          $set: {
-            avatar: fileURL,
-          },
-        },
-        { new: true }
-      );
-      return 'Profile picture updated';
-    } else {
-      console.log('need to validate');
-    }
+    // if (fileURL) {
+    //   await Users.findByIdAndUpdate(
+    //     authedUserID,
+    //     {
+    //       $set: {
+    //         avatar: fileURL,
+    //       },
+    //     },
+    //     { new: true }
+    //   );
+    //   return 'Profile picture updated';
+    // } else {
+    //   console.log('need to validate');
+    // }
   } catch (err) {
     throw err;
   }

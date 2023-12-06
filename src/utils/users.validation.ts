@@ -59,3 +59,19 @@ export const userLoginValidation = [
     .escape(),
   body('password', 'Password is required').trim().isLength({ min: 1 }).escape(),
 ];
+
+export const profilePicUploadValidation = [
+  check('file').custom((value, { req }) => {
+    console.log(req.file);
+    if (!req.file) {
+      throw new Error('Image is required');
+    }
+
+    const allowedFileTypes = ['image/jpeg', 'image/png'];
+    if (!allowedFileTypes.includes(req.file.mimetype)) {
+      throw new Error('Invalid file type. Allowed types: JPEG, PNG');
+    }
+
+    return true;
+  }),
+];

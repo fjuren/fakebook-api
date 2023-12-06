@@ -7,6 +7,7 @@ import * as handleErrors from '../utils/handleErrors';
 import Users from '../models/users.model';
 import Jwt, { JwtPayload } from 'jsonwebtoken';
 import { decodeToken } from '../utils/decodeToken';
+import { error } from 'console';
 
 export const signup = async (
   req: Request,
@@ -150,13 +151,22 @@ export const updateProfilePic = async (
   res: Response,
   next: NextFunction
 ) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    res.status(400).json({
+      success: false,
+      statusCode: 400,
+      errors: errors.array(),
+    });
+  }
+
   try {
     const authedUserID = req.params.authedUserID;
     const profileImageData = req.file;
 
-    // TODO do some validation
     if (!profileImageData) {
-      throw 'error';
+      throw new Error('An unexpected error occurred with the uploaded file');
     }
 
     const encodedFileURL = encodeURIComponent(profileImageData.filename);
