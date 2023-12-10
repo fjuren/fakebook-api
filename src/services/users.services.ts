@@ -98,20 +98,23 @@ export const login = async (email: string, password: string) => {
 
 export const findUser = async (userIDFromToken: string) => {
   try {
-    const user = await Users.findById(userIDFromToken).populate({
-      path: 'posts',
-      options: {
-        sort: { postCreated: -1 },
-      },
-    });
+    const user = await Users.findById(userIDFromToken);
+    // .populate({
+    //   path: 'posts',
+    //   options: {
+    //     sort: { postCreated: -1 },
+    //   },
+    // });
     if (user) {
+      console.log(user);
       const profileData = {
+        _id: user._id as string,
         firstName: user.firstName as string,
         lastName: user.lastName as string,
         friends: user.friends as [],
         friendRequest: user.friendRequest as [],
         userRequests: user.userRequests as [],
-        posts: user.posts as [],
+        // posts: user.posts as [],
         avatar: user.avatar as string,
       };
       return profileData;
@@ -188,7 +191,18 @@ export const acceptOrDeclineRequest = async (
         },
         { new: true }
       );
-      return 'Friend request accepted';
+
+      // If a single friend request is accepted, both the friend requestor and requestee become friends. So add the the requestee to the requestor's friend likst as well
+      await Users.findByIdAndUpdate(
+        userID,
+        {
+          $pull: { friendRequest: authedUserID },
+          $addToSet: { friends: authedUserID },
+        },
+        { new: true }
+      );
+
+      return 'Friend request accepted. Both friends are now added to their respected friends list';
     } else {
       await Users.findByIdAndUpdate(
         authedUserID,
@@ -213,7 +227,16 @@ export const unFriend = async (
       await Users.findByIdAndUpdate(
         authedUserID,
         {
-          $pull: { friends: friendToBeRemovedID }, // remove userID from friend request
+          $pull: { friends: friendToBeRemovedID }, // remove friend from authedUser request
+        },
+        { new: true }
+      );
+
+      // Also remove the authedUser from the
+      await Users.findByIdAndUpdate(
+        friendToBeRemovedID,
+        {
+          $pull: { friends: authedUserID }, // remove authedUser from receiving friend list as well
         },
         { new: true }
       );
