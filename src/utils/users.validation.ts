@@ -62,7 +62,6 @@ export const userLoginValidation = [
 
 export const profilePicUploadValidation = [
   check('file').custom((value, { req }) => {
-    console.log(req.file);
     if (!req.file) {
       throw new Error('Image is required');
     }

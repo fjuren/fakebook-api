@@ -176,11 +176,12 @@ export const updateProfilePic = async (
         ? `/uploads/${encodedFileURL}`
         : `http://localhost:3000/uploads/${encodedFileURL}`;
 
-    usersServices.updateProfilePicture(fileURL, authedUserID).then(() => {
+    usersServices.updateProfilePicture(fileURL, authedUserID).then((data) => {
       res.status(200).json({
         success: true,
         statusCode: 200,
-        message: 'Profile picture updated successfully',
+        message: data?.message,
+        fileURL: data?.fileURL,
       });
     });
   } catch (e: any) {
