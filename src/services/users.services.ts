@@ -98,15 +98,11 @@ export const login = async (email: string, password: string) => {
 
 export const findUser = async (userIDFromToken: string) => {
   try {
-    const user = await Users.findById(userIDFromToken);
-    // .populate({
-    //   path: 'posts',
-    //   options: {
-    //     sort: { postCreated: -1 },
-    //   },
-    // });
+    const user = await Users.findById(userIDFromToken).populate({
+      path: 'friends',
+      select: 'avatar firstName lastName',
+    });
     if (user) {
-      console.log(user);
       const profileData = {
         _id: user._id as string,
         firstName: user.firstName as string,

@@ -50,7 +50,7 @@ export const findAllPosts = async (page: any, limit: any) => {
               commentCreated: 1,
             },
           },
-          { $sort: { commentCreated: -1 } },
+          { $sort: { commentCreated: 1 } },
         ],
         as: 'comments',
       },
