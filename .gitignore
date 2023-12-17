@@ -1,3 +1,18 @@
+# Exclude test files and folder
+test/
+
+# Exclude ESLint configuration
+.eslintrc
+
+# Exclude Jest configuration
+jest.config.js
+
+# Exclude database population script
+populateDB.ts
+
+# Exclude TypeScript configuration
+tsconfig.json
+
 # Logs
 logs
 *.log
