@@ -10,9 +10,6 @@ jest.config.js
 # Exclude database population script
 populateDB.ts
 
-# Exclude TypeScript configuration
-tsconfig.json
-
 # Logs
 logs
 *.log
