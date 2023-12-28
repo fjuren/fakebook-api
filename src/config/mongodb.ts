@@ -2,6 +2,10 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import mongoose from 'mongoose';
 
+// console.log(process.env.NODE_ENV);
+// console.log(process.env.MONGO_URI_DEV);
+// console.log(process.env.MONGO_URI_PROD);
+
 const getMongoConnection = (): string => {
   return process.env.NODE_ENV === 'production'
     ? process.env.MONGO_URI_PROD || ''
