@@ -176,7 +176,9 @@ export const updateProfilePic = async (
         ? `${req.protocol}://${req.get('host')}/uploads/${encodedFileURL}`
         : `http://localhost:3000/uploads/${encodedFileURL}`;
     console.log(
-      `${req.protocol}://${req.get('host')}/uploads/${encodedFileURL}`
+      `${req.protocol}://${req.get(
+        'host'
+      )}/uploads/${encodedFileURL} from console!!`
     );
     usersServices.updateProfilePicture(fileURL, authedUserID).then((data) => {
       res.status(200).json({

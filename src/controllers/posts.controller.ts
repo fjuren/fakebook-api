@@ -125,7 +125,10 @@ export const createPost = async (
     if (req.file) {
       const { filename } = req.file;
       fileName = req.file.filename;
-      fileURL = `http://localhost:3000/uploads/${filename}`; // TODO Change domain to dynamic when creating production environment
+      fileURL =
+        process.env.NODE_ENV === 'production'
+          ? `${req.protocol}://${req.get('host')}/uploads/${filename}`
+          : `http://localhost:3000/uploads/${filename}`;
       filePath = `/uploads/${filename}`;
     } else {
       fileURL = ''; // schema expects a string
