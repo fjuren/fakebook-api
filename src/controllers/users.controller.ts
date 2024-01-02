@@ -3,6 +3,8 @@ import { Request, Response, NextFunction } from 'express-serve-static-core';
 import { validationResult } from 'express-validator';
 import * as usersServices from '../services/users.services';
 import * as handleErrors from '../utils/handleErrors';
+import { storage } from '../config/firebase'; // Import Firebase storage
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import Users from '../models/users.model';
 import Jwt, { JwtPayload } from 'jsonwebtoken';
@@ -169,17 +171,21 @@ export const updateProfilePic = async (
       throw new Error('An unexpected error occurred with the uploaded file');
     }
 
-    const encodedFileURL = encodeURIComponent(profileImageData.filename);
+    let fileURL: string;
 
-    const fileURL =
-      process.env.NODE_ENV === 'production'
-        ? `${req.protocol}://${req.get('host')}/uploads/${encodedFileURL}`
-        : `http://localhost:3000/uploads/${encodedFileURL}`;
-    console.log(
-      `${req.protocol}://${req.get(
-        'host'
-      )}/uploads/${encodedFileURL} from console!!`
-    );
+    if (process.env.NODE_ENV === 'production') {
+      // Storing my file in firebase cloud storage
+      const encodedFileURL = encodeURIComponent(profileImageData.originalname); // originalname only available, so slightly different implementations between prod and dev
+      const storageRef = ref(storage, 'uploads/' + encodedFileURL);
+      await uploadBytes(storageRef, profileImageData.buffer);
+      fileURL = await getDownloadURL(storageRef);
+    } else {
+      const encodedFileURL = encodeURIComponent(profileImageData.filename);
+      // local storage
+      fileURL = `http://localhost:3000/uploads/${encodedFileURL}`;
+      console.log(fileURL);
+    }
+
     usersServices.updateProfilePicture(fileURL, authedUserID).then((data) => {
       res.status(200).json({
         success: true,
