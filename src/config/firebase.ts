@@ -2,6 +2,9 @@
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getStorage } from 'firebase/storage';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import * as admin from 'firebase-admin';
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -21,3 +24,26 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
 // const analytics = getAnalytics(app);
+
+// need to initialize firebase-admin for creating a custom token
+const serviceAccount = require('path/to/serviceAccountKey.json');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+// Below is for generating a custom token for authed users and it will be used within firebase's security rules. This is because I don't user firebase authentication in this project, I use passport instead.
+export async function firebaseCustomToken(
+  uid: string,
+  email: string,
+  password: string
+): Promise<string> {
+  const auth = getAuth(app);
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    const customToken = await admin.auth().createCustomToken(uid);
+    return customToken;
+  } catch (error) {
+    console.error('Error generating custom token:', error);
+    throw new Error('Internal Server Error');
+  }
+}
