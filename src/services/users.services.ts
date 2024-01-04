@@ -5,6 +5,16 @@ import Users from '../models/users.model';
 import { IUsers } from '../models/users.model';
 import * as handleErrors from '../utils/handleErrors';
 
+interface SafeUser {
+  _id: string;
+  firebase_id?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatar?: string;
+  accountCreated: Date;
+}
+
 export const signup = async (
   firstName: string,
   lastName: string,
@@ -12,7 +22,7 @@ export const signup = async (
   password: string,
   avatar?: string
 ) => {
-  var safeUser = {};
+  var safeUser = {} as SafeUser;
   const userExists = await Users.findOne({ email: email }).then((user) => {
     if (user) {
       // error 409 - data conflict
@@ -50,18 +60,19 @@ export const signup = async (
   // extract only safe information that may be called to client side; not sensitive information
   safeUser = {
     _id: user._id, // safe to use ID since I'm using a token for authorization
+    firebase_id: user._id.toString(), // Convert ObjectId to string because firebase UID requirement is to be a string only
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
     avatar: user.avatar,
     accountCreated: user.accountCreated,
   };
-
+  console.log(safeUser);
   return { safeUser: safeUser, jwtToken: 'Bearer ' + jwtToken };
 };
 
 export const login = async (email: string, password: string) => {
-  var safeUser = {};
+  var safeUser = {} as SafeUser;
   const user = await Users.findOne({ email: email }).then((user) => {
     // User not found from email given
     if (!user) {

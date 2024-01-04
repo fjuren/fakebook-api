@@ -85,3 +85,6 @@ typings/
 .serverless
 
 dist
+
+# Ignore service account key file
+src/config/serviceAccountKey.json

@@ -1,9 +1,8 @@
-// Import the functions you need from the SDKs you need
+import * as admin from 'firebase-admin';
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getStorage } from 'firebase/storage';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import * as admin from 'firebase-admin';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -20,13 +19,18 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
+// Need to initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const storage = getStorage(app);
+
+// need to initialize Auth (from firebase I think)
+const auth = getAuth(app);
+
+// need to initialize firebase storage
+const storage = getStorage();
 // const analytics = getAnalytics(app);
 
 // need to initialize firebase-admin for creating a custom token
-const serviceAccount = require('path/to/serviceAccountKey.json');
+const serviceAccount = require('../config/serviceAccountKey.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
@@ -37,13 +41,14 @@ export async function firebaseCustomToken(
   email: string,
   password: string
 ): Promise<string> {
-  const auth = getAuth(app);
   try {
     await createUserWithEmailAndPassword(auth, email, password);
     const customToken = await admin.auth().createCustomToken(uid);
     return customToken;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error generating custom token:', error);
     throw new Error('Internal Server Error');
   }
 }
+
+export { storage, admin };

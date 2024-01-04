@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express-serve-static-core';
 import { validationResult } from 'express-validator';
 import * as usersServices from '../services/users.services';
 import * as handleErrors from '../utils/handleErrors';
-import { storage } from '../config/firebase'; // Import Firebase storage
+import { storage, firebaseCustomToken } from '../config/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import Users from '../models/users.model';
@@ -38,12 +38,19 @@ export const signup = async (
       avatar
     );
 
+    // for firebase custom token used for firebase cloud storage security rules for files
+    const uid = safeUser.firebase_id as string;
+    const customToken = await firebaseCustomToken(uid, email, password);
+    console.log(uid);
+    console.log(customToken);
+
     res.status(200).json({
       success: true,
       statusCode: 200,
       message: 'Account created successfully',
       user: safeUser,
       token: jwtToken,
+      firebaseCustomToken: customToken,
     });
   } catch (e: any) {
     if (e instanceof handleErrors.ConflictError) {
