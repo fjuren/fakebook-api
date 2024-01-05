@@ -30,9 +30,14 @@ const storage = getStorage();
 // const analytics = getAnalytics(app);
 
 // need to initialize firebase-admin for creating a custom token
-const serviceAccount = require('../config/serviceAccountKey.json');
+// const serviceAccount = require('../config/serviceAccountKey.json');
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  // credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert({
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY,
+  }),
 });
 
 // Below is for generating a custom token for authed users and it will be used within firebase's security rules. This is because I don't user firebase authentication in this project, I use passport instead.

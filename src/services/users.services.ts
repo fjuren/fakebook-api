@@ -67,7 +67,6 @@ export const signup = async (
     avatar: user.avatar,
     accountCreated: user.accountCreated,
   };
-  console.log(safeUser);
   return { safeUser: safeUser, jwtToken: 'Bearer ' + jwtToken };
 };
 

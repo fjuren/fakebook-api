@@ -41,8 +41,6 @@ export const signup = async (
     // for firebase custom token used for firebase cloud storage security rules for files
     const uid = safeUser.firebase_id as string;
     const customToken = await firebaseCustomToken(uid, email, password);
-    console.log(uid);
-    console.log(customToken);
 
     res.status(200).json({
       success: true,
