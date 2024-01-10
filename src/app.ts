@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 import passport from 'passport';
+
 import * as passportConfig from './config/passport';
 
 import * as error from './utils/handleErrors';

@@ -2,11 +2,17 @@ import express from 'express';
 import * as usersController from '../controllers/users.controller';
 import * as usersValidation from '../utils/users.validation';
 import passport from 'passport';
+import rateLimit from 'express-rate-limit';
 import { upload } from '../config/multer';
 import { check } from 'express-validator';
 
 const checkAuthToken = passport.authenticate('jwt', { session: false });
 const router = express.Router();
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 mins
+  max: 10, // 10 requests per 15 mins
+});
 
 // Regular user authentication (signup)
 router.post(
@@ -29,6 +35,7 @@ router.get('/profile/:userID', checkAuthToken, usersController.getUserProfile);
 router.post(
   '/update_profile_pic/:authedUserID',
   checkAuthToken,
+  limiter,
   upload.single('file'),
   usersValidation.profilePicUploadValidation,
   usersController.updateProfilePic
