@@ -35,7 +35,7 @@ router.get('/profile/:userID', checkAuthToken, usersController.getUserProfile);
 router.post(
   '/update_profile_pic/:authedUserID',
   checkAuthToken,
-  limiter,
+  // limiter,
   upload.single('file'),
   usersValidation.profilePicUploadValidation,
   usersController.updateProfilePic

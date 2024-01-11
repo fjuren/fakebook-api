@@ -3,11 +3,17 @@ import * as postsController from '../controllers/posts.controller';
 import * as postValidation from '../utils/posts.validation';
 import passport from 'passport';
 import { upload } from '../config/multer';
+import rateLimit from 'express-rate-limit';
 import { checkSchema } from 'express-validator';
 
 // protects the route by checking if valid token
 const checkAuthToken = passport.authenticate('jwt', { session: false });
 const router = express.Router();
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 mins
+  max: 10, // 10 requests per 15 mins
+});
 
 router.get('/timeline', checkAuthToken, postsController.getPosts);
 
@@ -21,6 +27,7 @@ router.get(
 router.post(
   '/create_post',
   checkAuthToken,
+  limiter,
   upload.single('file'),
   postValidation.newPostValidation,
   postsController.createPost
