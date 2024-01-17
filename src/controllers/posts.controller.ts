@@ -4,6 +4,8 @@ import { validationResult } from 'express-validator';
 import * as postsServices from '../services/posts.services';
 import { IPosts, ErrorResponse } from '../models/posts.model';
 import * as handleErrors from '../utils/handleErrors';
+import { storage, firebaseCustomToken } from '../config/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import { decodeToken } from '../utils/decodeToken';
 import { IUsers } from '../models/users.model';
@@ -117,19 +119,33 @@ export const createPost = async (
     }
 
     const { content } = req.body; // string from post
+    const postImageData = req.file;
     let fileURL = null; // null since uploading a file is optional, not required
     let filePath = '';
     let fileName = '';
 
     // req.file from multer and creates a url if there's an uploaded file
-    if (req.file) {
-      const { filename } = req.file;
-      fileName = req.file.filename;
-      fileURL =
-        process.env.NODE_ENV === 'production'
-          ? `${req.protocol}://${req.get('host')}/uploads/${filename}`
-          : `http://localhost:3000/uploads/${filename}`;
-      filePath = `/uploads/${filename}`;
+    if (postImageData) {
+      if (process.env.NODE_ENV === 'production') {
+        // Storing my file in firebase cloud storage
+        const encodedFileURL = encodeURIComponent(postImageData.originalname); // originalname only available, so slightly different implementations between prod and dev
+        const storageRef = ref(storage, 'uploads/' + encodedFileURL);
+        await uploadBytes(storageRef, postImageData.buffer);
+        fileURL = await getDownloadURL(storageRef);
+      } else {
+        const encodedFileURL = encodeURIComponent(postImageData.filename);
+        // local storage
+        fileURL = `http://localhost:3000/uploads/${encodedFileURL}`;
+        console.log(fileURL);
+      }
+
+      // const { filename } = postImageData;
+      // fileName = postImageData.filename;
+      // fileURL =
+      //   process.env.NODE_ENV === 'production'
+      //     ? `${req.protocol}://${req.get('host')}/uploads/${filename}`
+      //     : `http://localhost:3000/uploads/${filename}`;
+      // filePath = `/uploads/${filename}`;
     } else {
       fileURL = ''; // schema expects a string
       filePath = '';
@@ -147,7 +163,7 @@ export const createPost = async (
       success: true,
       statusCode: 200,
       message: 'Post created',
-      newPost,
+      newPost: newPost?.image,
     });
   } catch (e: any) {
     if (e instanceof handleErrors.ConflictError) {
