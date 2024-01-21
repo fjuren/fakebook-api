@@ -138,14 +138,6 @@ export const createPost = async (
         fileURL = `http://localhost:3000/uploads/${encodedFileURL}`;
         console.log(fileURL);
       }
-
-      // const { filename } = postImageData;
-      // fileName = postImageData.filename;
-      // fileURL =
-      //   process.env.NODE_ENV === 'production'
-      //     ? `${req.protocol}://${req.get('host')}/uploads/${filename}`
-      //     : `http://localhost:3000/uploads/${filename}`;
-      // filePath = `/uploads/${filename}`;
     } else {
       fileURL = ''; // schema expects a string
       filePath = '';

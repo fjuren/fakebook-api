@@ -55,8 +55,10 @@ router.post(
   usersController.postFriendRequestAnswer
 );
 
+// Remove a friend friend's list
 router.post('/unfriend/:userID', checkAuthToken, usersController.unFriend);
 
+// get all existing friends
 router.get('/friends/', checkAuthToken, usersController.getAllFriendRequests);
 
 // User logout
