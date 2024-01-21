@@ -15,15 +15,17 @@ const limiter = rateLimit({
   max: 10, // 10 requests per 15 mins
 });
 
+// get all timeline data
 router.get('/timeline', checkAuthToken, postsController.getPosts);
 
+//  get all user posts
 router.get(
   '/profile/:userID',
   checkAuthToken,
   postsController.getUserProfilePosts
 );
 
-// Create
+// Create new post record
 router.post(
   '/create_post',
   checkAuthToken,
@@ -33,7 +35,7 @@ router.post(
   postsController.createPost
 );
 
-// Delete
+// Delete a post
 router.delete('/:postId');
 
 // Like/unlike post
